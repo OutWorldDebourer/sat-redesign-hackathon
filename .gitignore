@@ -31,3 +31,5 @@ audit-screens/
 Thumbs.db
 .vscode/
 .idea/
+
+.vercel
