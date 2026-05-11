@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Local environment
+.env
+.env.*
+!.env.example
+.vercel/
+.chrome-dev-profile/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local QA screenshots and generated visual artifacts
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+audit-screens/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
