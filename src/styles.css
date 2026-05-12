@@ -371,8 +371,8 @@ p {
   border-radius: var(--radius-md);
   padding: clamp(0.85rem, 1.2vw, 1rem);
   background: var(--color-surface);
-  z-index: 2;
   overflow: visible;
+  z-index: 0; /* keep base stacking context; children will be elevated */
 }
 
 .action-box.gradient-cta::before {
@@ -406,6 +406,12 @@ p {
   background: var(--color-surface);
   z-index: 1;
   pointer-events: none;
+}
+
+/* Ensure form children render above the inner cover pseudo-element */
+.action-box.gradient-cta > * {
+  position: relative;
+  z-index: 2;
 }
 
 @keyframes gradient-rotate {
