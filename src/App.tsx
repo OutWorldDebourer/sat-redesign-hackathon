@@ -726,7 +726,7 @@ function UniversalActionBox({
 
   return (
     <form
-      className="action-box"
+      className="action-box gradient-cta"
       data-active-tab={tab}
       onSubmit={(event) => {
         event.preventDefault();
