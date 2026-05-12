@@ -1459,7 +1459,7 @@ function HeroInfoPanel({
 // INLINE RESULT CARD — usado en /consultar-pagar
 // ──────────────────────────────────────────────────────────────────
 
-function InlineResultCard({ data }: { data: MockResultData }) {
+function InlineResultCard({ data, step }: { data: MockResultData; step?: number }) {
   const amount = data.multa ?? data.monto ?? 0;
   const [payState, setPayState] = useState<"idle" | "form" | "processing" | "success">("idle");
   const [cardNum, setCardNum] = useState("");
