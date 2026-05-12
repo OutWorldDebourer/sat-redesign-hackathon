@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.git/
+.chrome-dev-profile/
+audit-screens/
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.log
+vite-dev.err.log
+vite-dev.out.log
