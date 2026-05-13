@@ -471,6 +471,7 @@ function LimaSkyline() {
 }
 
 function ConsultPayPage() {
+  const [activeTab, setActiveTab] = useState(paymentTabs[0].id);
   const [searchResult, setSearchResult] = useState<MockResultData | null>(null);
   const [searched, setSearched] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
@@ -496,27 +497,24 @@ function ConsultPayPage() {
     >
       <div className="dense-grid">
         <div className="feature-panel wide">
-          <UniversalActionBox onSubmit={handleSearch} />
-          {searched ? (
-            searchResult ? (
-              <InlineResultCard data={searchResult} step={step} />
-            ) : (
-              <NoResultCard />
-            )
-          ) : (
-            <EmptyState />
-          )}
+          <UniversalActionBox
+            onSubmit={handleSearch}
+            onTabChange={(tab) => {
+              setActiveTab(tab);
+              setSearched(false);
+              setSearchResult(null);
+              setStep(1);
+            }}
+          />
         </div>
-        <div className="feature-panel">
-          <h2>Medios disponibles</h2>
-          <ul className="check-list">
-            <li>Web SAT y Agencia Virtual.</li>
-            <li>Bancos, agentes autorizados y agencias SAT.</li>
-            <li>Pago con DNI/RUC, placa, codigo de pago o expediente.</li>
-          </ul>
-          <a className="secondary-action full" href={externalLinks.pagos} target="_blank" rel="noreferrer">
-            Ir al pago oficial
-          </a>
+        <div className="hero-visual">
+          <HeroInfoPanel
+            activeTab={activeTab}
+            searched={searched}
+            step={step}
+            result={searchResult}
+            noResult={searched && searchResult === null}
+          />
         </div>
       </div>
     </PageFrame>
@@ -959,7 +957,7 @@ const TAB_STEPS: Record<
       ),
     },
   ],
-  dni: [
+  "dni-ruc": [
     {
       label: "Ingresa tu DNI o RUC",
       hint: "Escribe tu número de 8 dígitos (DNI) o 11 dígitos (RUC).",
@@ -1421,6 +1419,12 @@ function HeroInfoPanel({
               <div className="hip-result-row">
                 <span>Infracción</span>
                 <strong>{result.clase}</strong>
+              </div>
+            )}
+            {result.detalle && (
+              <div className="hip-result-row hip-result-detail">
+                <span>Detalle</span>
+                <p>{result.detalle}</p>
               </div>
             )}
             <div className="hip-result-amount">
