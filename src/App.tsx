@@ -1,4 +1,5 @@
 import {
+  AlertCircle,
   ArrowRight,
   BadgeCheck,
   Building2,
@@ -40,6 +41,11 @@ import {
   serviceItems,
   sourceLinks,
 } from "./data/satData";
+import {
+  getConstraints,
+  sanitizeQuery,
+  validateQuery,
+} from "./utils/inputValidation";
 
 const externalLinks = {
   agenciaVirtual: "https://www.sat.gob.pe/websitev9/Servicios/AgenciaVirtual",
@@ -716,22 +722,43 @@ function UniversalActionBox({
 }) {
   const [tab, setTab] = useState(paymentTabs[0].id);
   const [value, setValue] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const active = paymentTabs.find((item) => item.id === tab) ?? paymentTabs[0];
+  const constraints = getConstraints(tab);
 
   const switchTab = (id: string) => {
     setTab(id);
     setValue("");
+    setError(null);
     onTabChange?.(id);
   };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(sanitizeQuery(tab, event.target.value));
+    if (error) setError(null);
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // El placeholder permite probar la demo con un solo clic.
+    const candidate = value.trim() || active.example;
+    const result = validateQuery(tab, candidate);
+    if (!result.valid) {
+      setError(result.message ?? "Revisa el dato ingresado.");
+      return;
+    }
+    setError(null);
+    onSubmit?.(candidate);
+  };
+
+  const errorId = "universal-query-error";
 
   return (
     <form
       className="action-box gradient-cta"
       data-active-tab={tab}
-      onSubmit={(event) => {
-        event.preventDefault();
-        onSubmit?.(value || active.example);
-      }}
+      onSubmit={handleSubmit}
+      noValidate
     >
       <div className="action-header">
         <span>
@@ -759,16 +786,28 @@ function UniversalActionBox({
       <div className="query-row">
         <input
           id="universal-query"
-          className="text-input"
+          className={`text-input${error ? " has-error" : ""}`}
           value={value}
-          onChange={(event) => setValue(event.target.value)}
+          onChange={handleChange}
           placeholder={active.example}
+          inputMode={constraints.inputMode}
+          maxLength={constraints.maxLength}
+          autoCapitalize={constraints.autoCapitalize}
+          autoComplete="off"
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : undefined}
         />
         <button className="primary-action" type="submit">
           Buscar
         </button>
       </div>
-      <p>{active.helper}</p>
+      {error ? (
+        <p className="input-error" id={errorId} role="alert">
+          <AlertCircle size={14} aria-hidden="true" /> {error}
+        </p>
+      ) : (
+        <p>{active.helper}</p>
+      )}
     </form>
   );
 }

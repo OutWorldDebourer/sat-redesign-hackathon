@@ -1,5 +1,17 @@
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { Bot, ChevronDown, ChevronUp, ExternalLink, MessageCircle, Minimize2, Send, Sparkles } from "lucide-react";
+import { FormEvent, KeyboardEvent, ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Bot,
+  ChevronDown,
+  ChevronUp,
+  CreditCard,
+  ExternalLink,
+  FileUp,
+  MessageCircle,
+  Minimize2,
+  Monitor,
+  Send,
+  Sparkles,
+} from "lucide-react";
 import { assistantIntents, quickActions } from "../../data/satData";
 import type { AssistantIntent, ChatMessage, QuickAction } from "../../types";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
@@ -46,6 +58,18 @@ const shortcutMeta: Record<string, { title: string; subtitle: string }> = {
   "intent-reclamar": { title: "Reclamo o escrito", subtitle: "Mesa de Partes y seguimiento" },
 };
 
+// Accesos oficiales que viven dentro de las acciones rapidas del chat.
+const officialLinkIds = ["pagar-online", "agencia-virtual", "mesa-partes"];
+
+const linkIcons: Record<string, ReactNode> = {
+  "credit-card": <CreditCard size={16} />,
+  monitor: <Monitor size={16} />,
+  "file-up": <FileUp size={16} />,
+};
+
+// Limite de crecimiento del textarea antes de hacer scroll interno.
+const COMPOSER_MAX_HEIGHT = 132;
+
 export function Assistant({ pagePath, command }: AssistantProps) {
   const [isMinimized, setIsMinimized] = useLocalStorage("sat-assistant:minimized", false);
   const [sheetState, setSheetState] = useLocalStorage<SheetState>("sat-assistant:sheet", "collapsed");
@@ -54,7 +78,7 @@ export function Assistant({ pagePath, command }: AssistantProps) {
   const [isThinking, setIsThinking] = useState(false);
   const [isAttending, setIsAttending] = useState(false);
   const [liveMessage, setLiveMessage] = useState("Asistente SAT listo");
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const threadRef = useRef<HTMLDivElement>(null);
   const lastCommandId = useRef<string | null>(null);
   const attentionTimer = useRef<number | null>(null);
@@ -67,6 +91,21 @@ export function Assistant({ pagePath, command }: AssistantProps) {
       primaryIntents
         .map((id) => assistantIntents.find((intent) => intent.id === id))
         .filter((intent): intent is AssistantIntent => Boolean(intent)),
+    [],
+  );
+
+  const officialLinks = useMemo(
+    () =>
+      officialLinkIds
+        .map((id) => quickActions.find((action) => action.id === id))
+        .filter((action): action is QuickAction => Boolean(action?.href)),
+    [],
+  );
+
+  // Si el navegador soporta `field-sizing: content`, el CSS crece el textarea
+  // solo; si no, lo hacemos por JS midiendo scrollHeight.
+  const supportsFieldSizing = useMemo(
+    () => typeof CSS !== "undefined" && Boolean(CSS.supports?.("field-sizing", "content")),
     [],
   );
 
@@ -103,6 +142,14 @@ export function Assistant({ pagePath, command }: AssistantProps) {
       behavior: prefersReducedMotion ? "auto" : "smooth",
     });
   }, [messages, isThinking]);
+
+  useEffect(() => {
+    if (supportsFieldSizing) return;
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, COMPOSER_MAX_HEIGHT)}px`;
+  }, [draft, supportsFieldSizing]);
 
   const triggerAssistantAttention = () => {
     if (attentionTimer.current) {
@@ -174,6 +221,17 @@ export function Assistant({ pagePath, command }: AssistantProps) {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     sendMessage(draft);
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    // En pantallas tactiles el teclado virtual no distingue Shift+Enter, asi que
+    // Enter inserta salto de linea y el envio queda en el boton.
+    const coarsePointer =
+      typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
+    if (event.key === "Enter" && !event.shiftKey && !coarsePointer) {
+      event.preventDefault();
+      sendMessage(draft);
+    }
   };
 
   const triggerIntent = (intent: AssistantIntent) => {
@@ -300,6 +358,26 @@ export function Assistant({ pagePath, command }: AssistantProps) {
             ))}
           </div>
 
+          <span className="assistant-section-label">Accesos oficiales</span>
+          <div className="assistant-quick-links" aria-label="Accesos oficiales del SAT">
+            {officialLinks.map((link) => (
+              <a
+                key={link.id}
+                className="assistant-quick-link"
+                href={link.href}
+                target="_blank"
+                rel="noreferrer"
+                title={link.description}
+              >
+                <span className="assistant-quick-link-icon" aria-hidden="true">
+                  {linkIcons[link.icon] ?? <ExternalLink size={16} />}
+                </span>
+                {link.label}
+                <ExternalLink className="assistant-quick-link-ext" size={13} aria-hidden="true" />
+              </a>
+            ))}
+          </div>
+
           {messages.map((message) => (
             <article key={message.id} className={`message ${message.role}${message.intentId ? " has-intent" : ""}`}>
               <strong>{message.role === "assistant" ? "SAT guía" : "Tú"}</strong>
@@ -316,35 +394,32 @@ export function Assistant({ pagePath, command }: AssistantProps) {
         </div>
 
         <form className="chat-composer" onSubmit={handleSubmit}>
-          <div className="chat-composer-row">
-            <input
+          <div className="composer-pill">
+            <textarea
               id="assistant-query"
               name="assistant-query"
               ref={inputRef}
-              className="text-input"
+              className="composer-input"
               value={draft}
+              rows={1}
               onChange={(event) => setDraft(event.target.value)}
-              placeholder="Ej. Tengo una papeleta que no aparece"
+              onKeyDown={handleKeyDown}
+              placeholder="Escribe tu consulta…"
               aria-label="Escribe tu consulta al asistente SAT"
             />
-            <button className="primary-action" type="submit" disabled={!draft.trim() || isThinking}>
+            <button
+              className="composer-send"
+              type="submit"
+              disabled={!draft.trim() || isThinking}
+              aria-disabled={!draft.trim() || isThinking}
+              aria-label="Enviar mensaje"
+            >
               <Send size={18} />
-              <span className="send-label">Enviar</span>
             </button>
           </div>
-          <div className="assistant-disclaimer">
+          <p className="assistant-disclaimer">
             Orientacion referencial. Verifica montos, plazos y requisitos en SAT antes de continuar.
-          </div>
-          <div className="assistant-source-row" aria-label="Accesos oficiales relacionados">
-            {quickActions.slice(3, 6).map((action: QuickAction) =>
-              action.href ? (
-                <a key={action.id} href={action.href} target="_blank" rel="noreferrer">
-                  {action.label}
-                  <ExternalLink size={13} />
-                </a>
-              ) : null,
-            )}
-          </div>
+          </p>
         </form>
       </div>
       <span className="assistant-live" aria-live="polite" role="status">
