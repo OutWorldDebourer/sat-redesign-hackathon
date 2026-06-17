@@ -1648,6 +1648,85 @@
   color: var(--color-muted);
 }
 
+/* Handoff humano (Fase 9). */
+.assistant-handoff {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+  padding: 0.6rem 0.8rem;
+  border: 1px solid color-mix(in oklch, var(--color-consultar) 32%, var(--color-border));
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklch, var(--color-consultar) 10%, var(--surface-base));
+  color: var(--color-text-strong);
+}
+.assistant-handoff.is-done {
+  border-color: color-mix(in oklch, var(--color-success) 32%, var(--color-border));
+  background: color-mix(in oklch, var(--color-success) 9%, var(--surface-base));
+}
+.assistant-handoff > svg {
+  flex: 0 0 auto;
+  margin-top: 0.15rem;
+  color: color-mix(in oklch, var(--color-consultar) 80%, var(--color-text-strong));
+}
+.assistant-handoff.is-done > svg {
+  color: var(--color-success);
+}
+.assistant-handoff > div {
+  display: grid;
+  gap: 0.25rem;
+}
+.assistant-handoff strong {
+  font-size: 0.84rem;
+  color: var(--color-text-strong);
+}
+.assistant-handoff small {
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--color-muted);
+}
+.assistant-handoff-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: 0.25rem;
+}
+.assistant-handoff-actions .primary-action,
+.assistant-handoff-actions .secondary-action {
+  min-height: 38px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+/* Toggle modo pensar (Fase 9). */
+.composer-tools {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.4rem;
+}
+.think-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 34px;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-panel);
+  color: var(--color-muted);
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.think-toggle.is-on {
+  border-color: color-mix(in oklch, var(--color-accent) 45%, var(--color-border));
+  background: color-mix(in oklch, var(--color-accent) 14%, var(--surface-base));
+  color: var(--color-primary);
+}
+.think-toggle svg {
+  color: var(--color-accent);
+}
+
 /* Accesos oficiales como chips de accion dentro de las acciones rapidas. */
 .assistant-quick-links {
   display: flex;

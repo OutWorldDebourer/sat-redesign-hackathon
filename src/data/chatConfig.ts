@@ -5,6 +5,7 @@
 // fuente primaria del SAT; los canales/dominios oficiales si son verificados.
 
 import { FISCAL_2026 } from "./fiscal/2026";
+import { buildSatKnowledgeBase } from "./satKnowledgeBase";
 
 // Meses en español sin depender de Intl (el backend Edge puede no traer ICU completo).
 const MESES = [
@@ -111,6 +112,9 @@ export function buildSystemMessages(datos: DatosVigentes = DATOS_VIGENTES): Chat
   return [
     { role: "system", content: SYSTEM_PROMPT_TEMPLATE },
     { role: "system", content: buildDatosVigentesMessage(datos) },
+    // Base de conocimiento compilada desde satData (servicios, tramites, FAQs,
+    // intenciones, sedes, enlaces). Estable -> cacheable por el proveedor.
+    { role: "system", content: buildSatKnowledgeBase() },
   ];
 }
 

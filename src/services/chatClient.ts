@@ -29,10 +29,17 @@ export class ChatStreamError extends Error {
   }
 }
 
+export type ChatMode = "normal" | "think";
+
 export type StreamChatOptions = {
   messages: ChatApiMessage[];
+  /** "think" usa el modelo razonador en el backend; "normal" el rapido. */
+  mode?: ChatMode;
   signal?: AbortSignal;
   onToken: (delta: string) => void;
+  /** Deltas de razonamiento (modo think). Se usan solo para indicar "pensando";
+   *  NO se muestran al usuario (no exponer razonamiento interno). */
+  onReasoning?: (delta: string) => void;
 };
 
 function isAbort(err: unknown): boolean {
@@ -40,13 +47,19 @@ function isAbort(err: unknown): boolean {
 }
 
 /** Llama al backend y entrega los deltas de contenido por `onToken`. */
-export async function streamChat({ messages, signal, onToken }: StreamChatOptions): Promise<void> {
+export async function streamChat({
+  messages,
+  mode = "normal",
+  signal,
+  onToken,
+  onReasoning,
+}: StreamChatOptions): Promise<void> {
   let res: Response;
   try {
     res = await fetch(CHAT_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages }),
+      body: JSON.stringify({ messages, mode }),
       signal,
     });
   } catch (err) {
@@ -81,8 +94,11 @@ export async function streamChat({ messages, signal, onToken }: StreamChatOption
         }
         try {
           const payload = JSON.parse(data);
-          const delta = payload?.choices?.[0]?.delta?.content;
-          if (typeof delta === "string" && delta) onToken(delta);
+          const delta = payload?.choices?.[0]?.delta ?? {};
+          if (typeof delta.reasoning_content === "string" && delta.reasoning_content) {
+            onReasoning?.(delta.reasoning_content);
+          }
+          if (typeof delta.content === "string" && delta.content) onToken(delta.content);
         } catch {
           // Fragmento JSON parcial o evento no-data: ignorar.
         }

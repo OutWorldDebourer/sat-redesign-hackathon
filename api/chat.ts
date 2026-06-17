@@ -24,7 +24,11 @@ function resolveBaseUrl(): string {
 }
 
 const BASE_URL = resolveBaseUrl();
-const MODEL = process.env.DEEPSEEK_MODEL ?? "deepseek-v4-flash";
+// Modelos configurables (DeepSeek V4). FAST = chat rapido (no-thinking) para el
+// grueso; THINK = mismo modelo en modo razonador (reasoning_effort alto) o un
+// modelo mas capaz si el operador lo configura. Sin hardcodear: env override.
+const MODEL_FAST = process.env.DEEPSEEK_MODEL_FAST ?? process.env.DEEPSEEK_MODEL ?? "deepseek-v4-flash";
+const MODEL_THINK = process.env.DEEPSEEK_MODEL_THINK ?? process.env.DEEPSEEK_MODEL ?? "deepseek-v4-flash";
 const CONNECT_TIMEOUT_MS = 20_000; // conectar + primer byte
 const STREAM_IDLE_TIMEOUT_MS = 20_000; // inactividad maxima entre chunks
 const MAX_RETRIES = 2;
@@ -147,17 +151,20 @@ export default async function handler(req: Request): Promise<Response> {
     return json({ error: "invalid_json" }, 400);
   }
 
-  const body = parsed as { messages?: unknown; reasoning?: unknown };
+  const body = parsed as { messages?: unknown; mode?: unknown; reasoning?: unknown };
   const messages = sanitizeMessages(body.messages);
   if (!messages) return json({ error: "invalid_messages" }, 400);
 
+  // Modo pensar: usa el modelo razonador con reasoning_effort alto y mas tokens.
+  // Normal: modelo rapido con reasoning_effort bajo (minima latencia).
+  const think = body.mode === "think" || body.reasoning === true;
   const payload = {
-    model: MODEL,
+    model: think ? MODEL_THINK : MODEL_FAST,
     messages: [...buildSystemMessages(), ...messages],
     temperature: 0.2,
-    max_tokens: 800,
+    max_tokens: think ? 1600 : 800,
     stream: true,
-    ...(body.reasoning === true ? {} : { reasoning_effort: "low" }),
+    reasoning_effort: think ? "high" : "low",
   };
 
   const controller = new AbortController();

@@ -1,6 +1,7 @@
 import { FormEvent, KeyboardEvent, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import {
   Bot,
+  Brain,
   ChevronDown,
   ChevronUp,
   CreditCard,
@@ -71,8 +72,21 @@ export function Assistant({ pagePath, command }: AssistantProps) {
   const [sheetState, setSheetState] = useLocalStorage<SheetState>("sat-assistant:sheet", "collapsed");
   const [isAttending, setIsAttending] = useState(false);
   const [liveMessage, setLiveMessage] = useState("Asistente SAT listo");
-  const { messages, draft, setDraft, isThinking, showEscalation, sendMessage, clearConversation } =
-    useAssistantChat(setLiveMessage);
+  const {
+    messages,
+    draft,
+    setDraft,
+    isThinking,
+    isReasoning,
+    mode,
+    setMode,
+    showEscalation,
+    handoff,
+    handoffTicket,
+    sendMessage,
+    requestHandoff,
+    clearConversation,
+  } = useAssistantChat(setLiveMessage);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const threadRef = useRef<HTMLDivElement>(null);
@@ -355,23 +369,56 @@ export function Assistant({ pagePath, command }: AssistantProps) {
           {isThinking ? (
             <article className="message assistant is-thinking">
               <strong>SAT guía</strong>
-              <p>Preparando orientacion referencial...</p>
+              <p>{isReasoning ? "Analizando tu caso (modo pensar)…" : "Preparando orientacion referencial…"}</p>
             </article>
           ) : null}
 
-          {showEscalation ? (
-            <a className="assistant-escalation" href={externalLinks.citas} target="_blank" rel="noreferrer">
+          {handoffTicket ? (
+            <div className="assistant-handoff is-done" role="status">
               <Headphones size={16} aria-hidden="true" />
-              <span>
-                <strong>Hablar con un asesor</strong>
-                <small>Para coactiva, impugnaciones o casos con efectos legales</small>
-              </span>
-              <ExternalLink size={13} aria-hidden="true" />
-            </a>
+              <div>
+                <strong>Caso derivado a un asesor ({handoffTicket.id})</strong>
+                <small>{handoffTicket.summary}</small>
+                <small>Un asesor humano lo tomara. Tambien puedes ir a Citas SAT.</small>
+              </div>
+            </div>
+          ) : showEscalation ? (
+            <div className="assistant-handoff" role="note">
+              <Headphones size={16} aria-hidden="true" />
+              <div>
+                <strong>¿Te derivo a un asistente humano?</strong>
+                <small>{handoff?.handoffReason}</small>
+                <div className="assistant-handoff-actions">
+                  <button type="button" className="primary-action" onClick={requestHandoff}>
+                    Derivar a asistente humano
+                  </button>
+                  <a
+                    className="secondary-action"
+                    href={externalLinks.citas}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label="Citas SAT (abre en una pestaña nueva)"
+                  >
+                    Citas SAT
+                  </a>
+                </div>
+              </div>
+            </div>
           ) : null}
         </div>
 
         <form className="chat-composer" onSubmit={handleSubmit}>
+          <div className="composer-tools">
+            <button
+              type="button"
+              className={`think-toggle${mode === "think" ? " is-on" : ""}`}
+              aria-pressed={mode === "think"}
+              onClick={() => setMode(mode === "think" ? "normal" : "think")}
+              title="Modo pensar: respuestas mas analiticas (un poco mas lentas). Se activa solo en consultas complejas."
+            >
+              <Brain size={15} aria-hidden="true" /> Modo pensar
+            </button>
+          </div>
           <div className="composer-pill">
             <textarea
               id="assistant-query"

@@ -41,8 +41,12 @@ El chat fijo funciona en dos modos:
 | Variable | Obligatoria | Default | Descripcion |
 |---|---|---|---|
 | `DEEPSEEK_API_KEY` | Sí (para chat real) | — | Clave de la API de DeepSeek. La lee solo `api/chat.ts`; nunca llega al cliente. |
-| `DEEPSEEK_MODEL` | No | `deepseek-v4-flash` | Modelo a usar. |
+| `DEEPSEEK_MODEL_FAST` | No | `deepseek-v4-flash` | Modelo del modo normal (rápido, `reasoning_effort` bajo). |
+| `DEEPSEEK_MODEL_THINK` | No | `deepseek-v4-flash` | Modelo del "modo pensar" (`reasoning_effort` alto; puede ser `deepseek-v4-pro`). |
+| `DEEPSEEK_MODEL` | No | `deepseek-v4-flash` | Fallback legacy si no se definen FAST/THINK. |
 | `DEEPSEEK_BASE_URL` | No | `https://api.deepseek.com` | Base URL del proveedor (se exige `https://`). |
+
+> **Modo pensar:** el chat envía `mode: "normal" | "think"` a `/api/chat`. En `think` usa `DEEPSEEK_MODEL_THINK` con `reasoning_effort: "high"` (consultas complejas se auto-escalan); en `normal`, `DEEPSEEK_MODEL_FAST` con `reasoning_effort: "low"`. El razonamiento interno no se muestra al usuario. La base de conocimiento del chat se compila desde `src/data/satData.ts` (ver `src/data/satKnowledgeBase.ts`).
 
 **Cliente** (prefijo `VITE_`, ver `.env.example`):
 
