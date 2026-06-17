@@ -9,6 +9,10 @@ import { buildSystemMessages, type ChatApiMessage } from "../src/data/chatConfig
 
 export const config = { runtime: "edge" };
 
+// El runtime Edge expone process.env sin traer @types/node; lo declaramos
+// localmente para tipar el acceso sin dependencias extra.
+declare const process: { env: Record<string, string | undefined> };
+
 const DEFAULT_BASE_URL = "https://api.deepseek.com";
 
 // Solo se acepta una base URL https (evita downgrade a HTTP y exfiltracion del
@@ -190,11 +194,6 @@ export default async function handler(req: Request): Promise<Response> {
         },
         flush() {
           clearTimeout(idleTimer);
-        },
-        cancel() {
-          // El cliente desconecto: corta upstream y limpia el timer.
-          clearTimeout(idleTimer);
-          controller.abort();
         },
       }),
     );
