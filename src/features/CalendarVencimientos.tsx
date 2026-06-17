@@ -5,7 +5,7 @@
 import { useState } from "react";
 import { BellRing, CalendarClock, Check } from "lucide-react";
 import { FISCAL_2026 } from "../data/fiscal/2026";
-import { businessDaysUntil, toISO } from "../utils/businessDaysCalculator";
+import { businessDaysUntil, localTodayISO } from "../utils/businessDaysCalculator";
 
 function formatFecha(iso: string): string {
   return new Date(`${iso}T00:00:00`).toLocaleDateString("es-PE", {
@@ -16,7 +16,7 @@ function formatFecha(iso: string): string {
 }
 
 export function CalendarVencimientos() {
-  const today = toISO(new Date());
+  const today = localTodayISO();
   const [reminders, setReminders] = useState<Record<string, boolean>>({});
   const items = [...FISCAL_2026.vencimientos].sort((a, b) => a.iso.localeCompare(b.iso));
 

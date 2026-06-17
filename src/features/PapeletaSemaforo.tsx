@@ -5,7 +5,7 @@
 
 import { Clock, Gavel, ShieldAlert } from "lucide-react";
 import { FISCAL_2026 } from "../data/fiscal/2026";
-import { addBusinessDays, businessDaysUntil, toISO } from "../utils/businessDaysCalculator";
+import { addBusinessDays, businessDaysUntil, localTodayISO } from "../utils/businessDaysCalculator";
 
 type SemaforoColor = "verde" | "amarillo" | "rojo" | "negro";
 
@@ -35,7 +35,7 @@ function money(value: number): string {
 }
 
 export function PapeletaSemaforo() {
-  const today = toISO(new Date());
+  const today = localTodayISO();
   const papeletas: DemoPapeleta[] = [
     {
       placa: "BCD-471",

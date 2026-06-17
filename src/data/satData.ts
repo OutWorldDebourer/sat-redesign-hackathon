@@ -284,14 +284,14 @@ export const paymentTabs: PaymentTab[] = [
     id: "codigo",
     label: "Codigo",
     prompt: "Ingresa codigo de pago o contribuyente",
-    example: "CP-2026-001",
+    example: "CP-2026-018",
     helper: "Util cuando tienes un codigo de pago, contribuyente o documento de deuda.",
   },
   {
     id: "expediente",
     label: "Expediente",
     prompt: "Ingresa numero de expediente",
-    example: "EXP-2026-001",
+    example: "EXP-2024-001",
     helper: "Util para revisar seguimiento de tramites, reclamos o escritos.",
   },
 ];

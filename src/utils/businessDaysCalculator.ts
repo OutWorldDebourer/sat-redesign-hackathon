@@ -16,6 +16,20 @@ export function toISO(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
 
+/**
+ * Fecha de hoy (ISO) en el calendario de Lima (America/Lima, UTC-5 sin horario
+ * de verano). Evita el off-by-one de tomar la fecha UTC despues de las ~19:00
+ * locales. Usar como "hoy" por defecto en el cliente.
+ */
+export function localTodayISO(timeZone = "America/Lima"): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
 function isBusinessDay(date: Date, holidays: ReadonlySet<string>): boolean {
   const weekday = date.getUTCDay();
   if (weekday === 0 || weekday === 6) return false; // domingo / sabado
@@ -48,7 +62,7 @@ export function businessDaysUntil(
   holidays: readonly string[] = FISCAL_2026.holidays,
   todayISO?: string,
 ): number {
-  const today = todayISO ?? toISO(new Date());
+  const today = todayISO ?? localTodayISO();
   return countBusinessDays(today, targetISO, holidays);
 }
 

@@ -4,6 +4,18 @@
 // Sin secretos. Las cifras numericas son DEMO/orientativas hasta confirmar
 // fuente primaria del SAT; los canales/dominios oficiales si son verificados.
 
+import { FISCAL_2026 } from "./fiscal/2026";
+
+// Meses en español sin depender de Intl (el backend Edge puede no traer ICU completo).
+const MESES = [
+  "enero", "febrero", "marzo", "abril", "mayo", "junio",
+  "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre",
+];
+function fechaCorta(iso: string): string {
+  const [, m, d] = iso.split("-");
+  return `${Number(d)} de ${MESES[Number(m) - 1]}`;
+}
+
 /** Mensaje de rol para la API compatible con OpenAI. */
 export type ChatRole = "system" | "user" | "assistant" | "tool";
 export type ChatApiMessage = {
@@ -59,12 +71,13 @@ export type DatosVigentes = {
 };
 
 export const DATOS_VIGENTES: DatosVigentes = {
-  anioFiscal: 2026,
-  uit: 5350,
-  vencimientos: [
-    { concepto: "Predial y arbitrios (1.a cuota)", fecha: "27 de febrero" },
-    { concepto: "Impuesto vehicular (cuota unica)", fecha: "31 de marzo" },
-  ],
+  // UIT y vencimientos derivados de la fuente fiscal versionada (fuente unica).
+  anioFiscal: FISCAL_2026.year,
+  uit: FISCAL_2026.uit,
+  vencimientos: FISCAL_2026.vencimientos.map((v) => ({
+    concepto: `${v.tributo} (${v.etiqueta})`,
+    fecha: fechaCorta(v.iso),
+  })),
   descuentos: [
     { concepto: "Papeleta - pago voluntario", detalle: "descuento por pronto pago dentro del plazo de dias habiles" },
     { concepto: "Pago anticipado anual", detalle: "beneficio por cancelar el ejercicio completo antes del vencimiento" },
