@@ -1,0 +1,126 @@
+/* Layout: app-shell, header, navegacion y contenedor principal. */
+
+
+
+.app-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(320px, 22vw, 360px);
+  min-height: 100vh;
+}
+
+.app-shell:has(.assistant-region.is-minimized) {
+  grid-template-columns: minmax(0, 1fr) 96px;
+}
+
+.site-region {
+  min-width: 0;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-lg);
+  min-height: 64px;
+  padding: 0.6rem clamp(var(--space-md), 2vw, var(--space-xl));
+  background: var(--color-primary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: oklch(0.985 0.008 250);
+}
+
+.brand strong,
+.brand small {
+  display: block;
+}
+
+.brand strong {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: oklch(0.985 0.008 250);
+}
+
+.brand small {
+  margin-top: 2px;
+  color: color-mix(in oklch, white 78%, var(--color-primary));
+  font-size: 0.82rem;
+}
+
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  min-width: 0;
+}
+
+.desktop-nav a,
+.mobile-nav a {
+  color: color-mix(in oklch, white 90%, var(--color-primary));
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.desktop-nav a {
+  padding: 0.58rem 0.68rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.desktop-nav a.active,
+.desktop-nav a:hover {
+  background: color-mix(in oklch, white 12%, transparent);
+  color: white;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: var(--space-xs);
+}
+
+.site-header .ghost-link {
+  display: inline-flex;
+  min-height: 40px;
+  color: color-mix(in oklch, white 92%, var(--color-primary));
+  font-size: 0.78rem;
+}
+
+.site-header .primary-action {
+  min-height: 42px;
+  padding: 0.62rem 0.88rem;
+  background: color-mix(in oklch, var(--color-accent) 70%, var(--color-primary));
+  color: white;
+}
+
+.mobile-only,
+.mobile-nav {
+  display: none;
+}
+
+.main-content {
+  min-width: 0; /* impide que contenido ancho (URLs, tablas) desborde el grid y empuje el asistente */
+  overflow-x: clip;
+  padding: 0 clamp(var(--space-sm), 1.4vw, var(--space-lg));
+  padding-bottom: var(--space-2xl);
+}
+
+
+
+/* ── Toggle de tema (Bloque 1) ─────────────────────────────────── */
+.site-header .theme-toggle {
+  color: oklch(0.985 0.008 250);
+  background: color-mix(in oklch, white 10%, transparent);
+}
+.site-header .theme-toggle:hover {
+  background: color-mix(in oklch, white 20%, transparent);
+}

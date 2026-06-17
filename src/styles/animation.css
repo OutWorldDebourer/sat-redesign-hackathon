@@ -1,0 +1,321 @@
+/* Animacion: @keyframes y bloques prefers-reduced-motion. */
+
+
+
+@keyframes gradient-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .composer-send,
+  .assistant-quick-link {
+    transition: none;
+  }
+}
+
+@keyframes routeRise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes panelSlide {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes tabSettle {
+  from {
+    transform: scale(0.96);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes resultIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes routePulse {
+  0% {
+    transform: scale(0.985);
+  }
+  42% {
+    transform: scale(1.012);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes routeHalo {
+  0% {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  32% {
+    opacity: 0.78;
+    transform: scale(1.01);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.045);
+  }
+}
+
+@keyframes routeTransfer {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  36% {
+    opacity: 0.82;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(34px) scaleX(1);
+  }
+}
+
+@keyframes assistantAttendDesktop {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  42% {
+    transform: translateX(-6px);
+  }
+}
+
+@keyframes assistantAttendMobile {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  42% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes assistantFrame {
+  0% {
+    opacity: 0;
+    transform: scale(0.992);
+  }
+  32% {
+    opacity: 0.86;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.012);
+  }
+}
+
+@keyframes assistantSweep {
+  0% {
+    opacity: 0;
+    transform: translateX(-55%);
+  }
+  45% {
+    opacity: 0.82;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(55%);
+  }
+}
+
+@keyframes railPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 6px color-mix(in oklch, var(--color-pagar) 18%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 10px color-mix(in oklch, var(--color-pagar) 8%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-copy,
+  .action-box,
+  .route-lane,
+  .quick-card,
+  .civic-panel {
+    animation: routeRise 620ms var(--ease-out) both;
+  }
+
+  .action-box {
+    animation-delay: 80ms;
+  }
+
+  .route-lane {
+    animation-delay: var(--lane-delay, 160ms);
+  }
+
+  .quick-card {
+    animation-delay: 120ms;
+  }
+
+  .tab-list button.is-active {
+    animation: tabSettle 220ms var(--ease-out);
+  }
+
+  .mock-result,
+  .empty-state,
+  .message {
+    animation: resultIn 260ms var(--ease-out) both;
+  }
+
+  .route-card {
+    transition:
+      opacity 220ms var(--ease-out),
+      transform 220ms var(--ease-out),
+      border-color 220ms var(--ease-out),
+      box-shadow 220ms var(--ease-out);
+  }
+
+  .route-card.is-selected {
+    animation: routePulse 620ms var(--ease-out) both;
+  }
+
+  .route-card.is-selected::before {
+    animation: routeHalo 780ms var(--ease-out) both;
+  }
+
+  .route-card.is-selected .route-action::after {
+    animation: routeTransfer 520ms var(--ease-out) 70ms both;
+  }
+
+  .assistant-region.is-attending .assistant-panel {
+    animation: assistantAttendDesktop 560ms var(--ease-out) both;
+  }
+
+  .assistant-region.is-attending .assistant-panel::before {
+    animation: assistantFrame 780ms var(--ease-out) both;
+  }
+
+  .assistant-region.is-attending .assistant-top::after {
+    animation: assistantSweep 720ms var(--ease-out) both;
+  }
+
+  .assistant-rail-status {
+    animation: railPulse 2.4s var(--ease-out) infinite;
+  }
+
+  .quick-card,
+  .service-card,
+  .procedure-card,
+  .office-card,
+  .route-card,
+  .route-lane,
+  .case-row,
+  .route-assist,
+  .primary-action,
+  .secondary-action,
+  .assistant-region {
+    transition:
+      transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-width: 981px) {
+  .assistant-region {
+    animation: panelSlide 520ms var(--ease-out) both;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (max-width: 980px) {
+  .assistant-region.is-attending .assistant-panel {
+    animation-name: assistantAttendMobile;
+  }
+
+  .route-card.is-selected .route-action::after {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .route-card.is-selected::before,
+  .assistant-region.is-attending .assistant-panel::before {
+    opacity: 0.72;
+  }
+
+}
+
+@keyframes stepperPop {
+  from { transform: scale(0.7); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modalIn {
+  from { transform: translateY(28px) scale(0.96); opacity: 0; }
+  to   { transform: translateY(0)    scale(1);    opacity: 1; }
+}
+
+@keyframes ringPulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.025); }
+}
+
+@keyframes hipIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+@keyframes dotPop {
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+@keyframes hipPanelIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dotPulse {
+  0%, 100% { transform: scale(0.85); opacity: 0.7; }
+  50%       { transform: scale(1.15); opacity: 1; }
+}

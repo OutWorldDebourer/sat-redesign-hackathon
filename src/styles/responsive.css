@@ -1,0 +1,435 @@
+/* Responsive: media y container queries (sobrescriben base/layout/componentes). */
+
+
+
+@container (min-width: 640px) {
+  .hero-access-grid {
+    grid-template-columns: repeat(4, minmax(132px, 1fr));
+    width: min(100%, 680px);
+    max-width: 680px;
+  }
+
+  .hero-access-card {
+    white-space: nowrap;
+  }
+}
+
+@supports (field-sizing: content) {
+  .composer-input {
+    field-sizing: content;
+    min-height: 2.5rem;
+  }
+}
+
+@media (max-width: 1180px) {
+  .desktop-nav a {
+    padding-inline: 0.62rem;
+    font-size: 0.84rem;
+  }
+
+  .ghost-link {
+    display: none;
+  }
+}
+
+/* Con el asistente acoplado (320px) el nav completo solo cabe a ~1503px+; por
+   debajo se solapaba con la marca. Colapsa a menu hamburguesa mientras el panel
+   sigue acoplado (el layout movil completo recien entra a <=980px). */
+@media (min-width: 981px) and (max-width: 1500px) {
+  .desktop-nav {
+    display: none;
+  }
+
+  .icon-button.mobile-only {
+    display: inline-flex;
+  }
+
+  .mobile-nav {
+    position: sticky;
+    top: 72px;
+    z-index: 19;
+    display: grid;
+    gap: var(--space-xs);
+    padding: var(--space-sm) clamp(var(--space-md), 2vw, var(--space-xl));
+    background: color-mix(in oklch, var(--color-background) 94%, var(--surface-base));
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .mobile-nav a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 48px;
+    padding: 0 var(--space-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-panel);
+  }
+}
+
+@media (max-width: 980px) {
+  .app-shell {
+    display: block;
+  }
+
+  .site-header {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .desktop-nav {
+    display: none;
+  }
+
+  .mobile-only {
+    display: inline-flex;
+  }
+
+  .mobile-nav {
+    position: sticky;
+    top: 76px;
+    z-index: 19;
+    display: grid;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    background: color-mix(in oklch, var(--color-background) 94%, var(--surface-base));
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .mobile-nav a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 48px;
+    padding: 0 var(--space-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-panel);
+  }
+
+  .main-content {
+    padding: var(--space-lg);
+    padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .hero-band,
+  .split-section,
+  .dense-grid {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .hero-band {
+    gap: var(--space-lg);
+  }
+
+  .hero-visual {
+    min-height: 230px;
+  }
+
+  .lima-skyline {
+    right: 50%;
+    bottom: -28px;
+    width: min(760px, 130vw);
+    transform: translateX(50%);
+  }
+
+  .hero-access-grid,
+  .indicator-grid,
+  .benefit-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .route-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .route-lanes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .route-lane,
+  .route-lane:nth-child(1),
+  .route-lane:nth-child(2) {
+    grid-column: span 1;
+  }
+
+  .route-lane:nth-child(6) {
+    grid-column: 1 / -1;
+    grid-template-columns: initial;
+    grid-template-rows: auto auto 1fr auto;
+    align-items: stretch;
+    min-height: 220px;
+  }
+
+  .quick-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .quick-card,
+  .quick-card:nth-child(1),
+  .quick-card:nth-child(6) {
+    grid-column: span 1;
+  }
+
+  h1,
+  .page-heading h1 {
+    max-width: 13ch;
+  }
+
+  .assistant-region {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    top: auto;
+    height: var(--assistant-peek-height);
+    min-height: 0;
+    border-left: 0;
+    border-top: 1px solid var(--color-border);
+    border-radius: 22px 22px 0 0;
+    box-shadow: 0 -18px 60px color-mix(in oklch, var(--color-primary) 18%, transparent);
+  }
+
+  .assistant-region[data-sheet="collapsed"] {
+    transform: translateY(calc(100% - 58px - env(safe-area-inset-bottom, 0px)));
+    opacity: 0.98;
+  }
+
+  .assistant-region[data-sheet="peek"] {
+    height: var(--assistant-peek-height);
+    transform: translateY(0);
+  }
+
+  .assistant-region[data-sheet="expanded"] {
+    height: min(78dvh, 760px);
+    transform: translateY(0);
+  }
+
+  .assistant-panel {
+    height: 100%;
+  }
+
+  .assistant-top {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .chat-thread {
+    padding: var(--space-md);
+  }
+
+  .chat-composer {
+    /* el composer no queda tapado por el home indicator del telefono */
+    padding-bottom: max(var(--space-md), env(safe-area-inset-bottom));
+  }
+
+  .bottom-sheet-trigger {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    min-height: 22px;
+    padding: var(--space-xs) 0 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .bottom-sheet-trigger span {
+    display: block;
+    width: 52px;
+    height: 5px;
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--color-primary) 30%, var(--surface-base));
+  }
+
+  .desktop-minimize {
+    display: none;
+  }
+
+  .assistant-region.is-minimized {
+    right: var(--space-md);
+    left: auto;
+    bottom: var(--space-md);
+    width: 88px;
+    height: min(72dvh, 520px);
+    border-radius: 28px;
+    overflow: hidden;
+  }
+
+  .assistant-region.is-minimized .assistant-minirail {
+    min-height: 100%;
+  }
+
+  .assistant-region.is-minimized .assistant-rail-button {
+    min-height: calc(100% - var(--space-lg));
+  }
+}
+
+@media (max-width: 640px) {
+  .site-header {
+    min-height: 68px;
+    padding: var(--space-sm);
+  }
+
+  .brand small,
+  .header-actions .primary-action {
+    display: none;
+  }
+
+  .brand-mark {
+    width: 46px;
+    height: 46px;
+  }
+
+  .main-content {
+    padding: var(--space-md);
+    padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px));
+  }
+
+  h1,
+  .page-heading h1 {
+    font-size: clamp(2.25rem, 11vw, 3.2rem);
+  }
+
+  .tab-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .route-status-strip,
+  .route-lanes,
+  .indicator-grid,
+  .benefit-strip,
+  .quick-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-access-grid,
+  .route-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-canvas {
+    padding: var(--space-sm);
+    border-radius: 0 0 14px 14px;
+  }
+
+  .hero-band {
+    padding: var(--space-md) var(--space-sm) var(--space-md);
+  }
+
+  .hero-visual {
+    min-height: 118px;
+    order: -1;
+  }
+
+  .lima-skyline {
+    width: min(620px, 150vw);
+    opacity: 0.88;
+  }
+
+  .hero-access-card {
+    min-height: 48px;
+    font-size: 0.78rem;
+    white-space: normal;
+  }
+
+  .route-card {
+    min-height: 184px;
+    padding: var(--space-sm);
+  }
+
+  .route-card-head {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-xs);
+  }
+
+  .route-state-mark {
+    display: none;
+  }
+
+  .route-card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+  }
+
+  .route-card h3 {
+    font-size: 0.94rem;
+  }
+
+  .route-card p {
+    font-size: 0.72rem;
+  }
+
+  .route-action {
+    font-size: 0.74rem;
+  }
+
+  .benefit-item + .benefit-item {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .route-lane,
+  .route-lane:nth-child(1),
+  .route-lane:nth-child(2),
+  .route-lane:nth-child(6),
+  .quick-card,
+  .quick-card:nth-child(1),
+  .quick-card:nth-child(6) {
+    grid-column: auto;
+  }
+
+  .query-row {
+    grid-template-columns: 1fr;
+  }
+
+  .action-box {
+    padding: var(--space-sm);
+  }
+
+  .action-box .query-row {
+    grid-template-columns: minmax(0, 1fr) minmax(86px, auto);
+  }
+
+  .action-box .primary-action {
+    padding-inline: 0.75rem;
+  }
+
+  .quick-grid,
+  .service-grid,
+  .procedure-grid,
+  .office-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-panel,
+  .action-box,
+  .civic-panel {
+    padding: var(--space-lg);
+  }
+}
+
+@media (max-width: 360px) {
+  .hero-access-grid,
+  .route-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+
+@media (max-width: 680px) {
+  .modal-content {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .modal-body {
+    grid-template-columns: 1fr;
+  }
+
+  .stepper-label {
+    display: none;
+  }
+
+  .modal-actions-row {
+    flex-direction: column;
+  }
+}

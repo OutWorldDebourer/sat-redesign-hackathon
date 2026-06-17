@@ -1,0 +1,11 @@
+/* Tema: override de color-scheme por :root[data-theme] (toggle manual). */
+
+
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
