@@ -4083,3 +4083,12 @@ p {
 .site-header .theme-toggle:hover {
   background: color-mix(in oklch, white 20%, transparent);
 }
+
+/* ── Fallback de carga de ruta (Bloque 2: React.lazy + Suspense) ── */
+.route-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  width: 100%;
+}
