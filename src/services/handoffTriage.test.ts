@@ -18,6 +18,20 @@ describe("triageHandoff", () => {
     expect(r.reasonCode).toBe("legal_coactiva");
   });
 
+  it("captura del vehiculo sigue siendo critico (verdadero positivo)", () => {
+    expect(triageHandoff([u("me hicieron la captura del vehiculo")]).reasonCode).toBe("legal_coactiva");
+  });
+
+  it("NO marca critico una captura de pantalla (falso positivo evitado)", () => {
+    const r = triageHandoff([u("te paso una captura de pantalla del recibo de pago")]);
+    expect(r.priority).not.toBe("critical");
+    expect(r.reasonCode).not.toBe("legal_coactiva");
+  });
+
+  it("NO deriva 'esto es un pago de predial' (frustracion no se sobre-dispara)", () => {
+    expect(triageHandoff([u("esto es un pago de predial, verdad?")]).handoffRequired).toBe(false);
+  });
+
   it("marca pago fallido como alta prioridad", () => {
     const r = triageHandoff([u("pague pero fallo el pago y me cobraron igual")]);
     expect(r.handoffRequired).toBe(true);

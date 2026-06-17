@@ -96,6 +96,26 @@ export async function streamChat({
   let buffer = "";
   let completed = false;
 
+  const processLine = (line: string) => {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith("data:")) return;
+    const data = trimmed.slice(5).trim();
+    if (data === "[DONE]") {
+      completed = true;
+      return;
+    }
+    try {
+      const payload = JSON.parse(data);
+      const delta = payload?.choices?.[0]?.delta ?? {};
+      if (typeof delta.reasoning_content === "string" && delta.reasoning_content) {
+        onReasoning?.(delta.reasoning_content);
+      }
+      if (typeof delta.content === "string" && delta.content) onToken(delta.content);
+    } catch {
+      // Fragmento JSON parcial o evento no-data: ignorar.
+    }
+  };
+
   try {
     for (;;) {
       const { value, done } = await reader.read();
@@ -103,26 +123,11 @@ export async function streamChat({
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split("\n");
       buffer = lines.pop() ?? ""; // conserva la linea incompleta
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed.startsWith("data:")) continue;
-        const data = trimmed.slice(5).trim();
-        if (data === "[DONE]") {
-          completed = true;
-          continue;
-        }
-        try {
-          const payload = JSON.parse(data);
-          const delta = payload?.choices?.[0]?.delta ?? {};
-          if (typeof delta.reasoning_content === "string" && delta.reasoning_content) {
-            onReasoning?.(delta.reasoning_content);
-          }
-          if (typeof delta.content === "string" && delta.content) onToken(delta.content);
-        } catch {
-          // Fragmento JSON parcial o evento no-data: ignorar.
-        }
-      }
+      for (const line of lines) processLine(line);
     }
+    // Procesa la ultima linea si el stream cierra sin salto final (p. ej.
+    // "data: [DONE]" sin newline): evita descartar una respuesta valida.
+    if (buffer.trim()) processLine(buffer);
   } catch (err) {
     throw new ChatStreamError(isAbort(err) ? "aborted" : "network");
   }

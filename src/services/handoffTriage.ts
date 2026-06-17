@@ -29,7 +29,7 @@ const RULES: {
 }[] = [
   {
     code: "legal_coactiva",
-    re: /coactiv|embargo|remate|captur|internad|comiso|medida cautelar|notificaci[oó]n de cobranza|resoluci[oó]n de ejecuci[oó]n/i,
+    re: /coactiv|embargo|\bremate\b|medida cautelar|notificaci[oó]n de cobranza|resoluci[oó]n de ejecuci[oó]n|orden de captura|captura (?:del?|de mi|de su)?\s?veh|veh[ií]culo internad|internamiento|\bdecomiso\b|\bcomiso\b/i,
     priority: "critical",
     reason: "Caso con efectos juridicos (coactiva/embargo/medida cautelar).",
     contact: true,
@@ -45,7 +45,7 @@ const RULES: {
   },
   {
     code: "reclamo_formal",
-    re: /queja|reclamo formal|denuncia|corrupci[oó]n|maltrato|abuso|tramitador|me cobraron de mas|cobro indebido/i,
+    re: /queja|reclamo formal|denuncia|corrupci[oó]n|maltrato|abuso de autoridad|tramitador|me cobraron de mas|cobro indebido/i,
     priority: "high",
     reason: "Queja, reclamo formal o posible cobro indebido.",
     contact: true,
@@ -61,7 +61,7 @@ const RULES: {
   },
   {
     code: "frustracion",
-    re: /no entiendo nada|p[eé]simo|in[uú]til|no sirve|ya te dije|est[oó]y harto|esto es un|no me ayuda|terrible|rid[ií]culo/i,
+    re: /no entiendo nada|p[eé]simo|in[uú]til|no sirve|ya te dije|est[oó]y harto|esto es un (?:desastre|horror|caos|asco|robo|desorden|fastidio|enredo)|no me ayuda|terrible|rid[ií]culo/i,
     priority: "medium",
     reason: "Usuario frustrado o insatisfecho con la orientacion automatica.",
     contact: false,

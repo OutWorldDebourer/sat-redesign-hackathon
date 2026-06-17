@@ -15,6 +15,11 @@ describe("containsPII", () => {
     expect(containsPII("mi celular 948592013")).toBe(true);
   });
 
+  it("detecta correo y telefono fijo", () => {
+    expect(containsPII("contacto ana@sat.gob.pe")).toBe(true);
+    expect(containsPII("fijo 6125555")).toBe(true);
+  });
+
   it("no marca texto sin identificadores", () => {
     expect(containsPII("como pago mi predial")).toBe(false);
     expect(containsPII("vence el 27 de febrero")).toBe(false);
@@ -32,6 +37,11 @@ describe("anonymizePII", () => {
     expect(anonymizePII("dni 4859 2013")).toBe("dni [DNI]");
     expect(anonymizePII("placa MA-1234")).toBe("placa [PLACA]");
     expect(anonymizePII("mi numero 948592013")).toBe("mi numero [TEL]");
+  });
+
+  it("enmascara correo y telefono fijo", () => {
+    expect(anonymizePII("escribeme a juan.perez@gmail.com")).toBe("escribeme a [CORREO]");
+    expect(anonymizePII("mi telefono fijo es 6125555")).toBe("mi telefono fijo es [TEL]");
   });
 
   it("no confunde un RUC con un DNI", () => {
