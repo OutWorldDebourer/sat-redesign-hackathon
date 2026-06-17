@@ -12,27 +12,31 @@
 }
 
 :root {
-  color-scheme: light;
-  --color-primary: #16236e;
-  --color-secondary: #337ab7;
-  --color-accent: #006db3;
-  --color-background: oklch(0.985 0.006 250);
-  --color-surface: oklch(0.965 0.012 250);
-  --color-surface-strong: oklch(0.935 0.028 250);
-  --color-panel: oklch(0.998 0.004 250);
-  --color-text: #555555;
-  --color-text-strong: oklch(0.24 0.055 255);
-  --color-muted: oklch(0.52 0.035 250);
-  --color-border: oklch(0.86 0.025 250);
-  --color-success: oklch(0.43 0.13 148);
-  --color-warning: oklch(0.56 0.13 78);
-  --color-danger: oklch(0.48 0.16 25);
-  --color-consultar: oklch(0.52 0.16 245);
-  --color-pagar: oklch(0.48 0.13 153);
-  --color-alerta: oklch(0.68 0.14 78);
-  --color-reclamo: oklch(0.52 0.15 24);
-  --color-sedes: oklch(0.55 0.11 188);
-  --color-focus: #006db3;
+  color-scheme: light dark;
+  --color-primary: light-dark(#16236e, oklch(0.42 0.13 261));
+  --color-secondary: light-dark(#337ab7, oklch(0.64 0.12 250));
+  --color-accent: light-dark(#006db3, oklch(0.7 0.13 244));
+  --color-background: light-dark(oklch(0.985 0.006 250), oklch(0.17 0.018 264));
+  --color-surface: light-dark(oklch(0.965 0.012 250), oklch(0.215 0.022 264));
+  --color-surface-strong: light-dark(oklch(0.935 0.028 250), oklch(0.285 0.03 264));
+  --color-panel: light-dark(oklch(0.998 0.004 250), oklch(0.235 0.024 264));
+  --color-text: light-dark(#555555, oklch(0.8 0.02 264));
+  --color-text-strong: light-dark(oklch(0.24 0.055 255), oklch(0.96 0.012 264));
+  --color-muted: light-dark(oklch(0.52 0.035 250), oklch(0.68 0.03 264));
+  --color-border: light-dark(oklch(0.86 0.025 250), oklch(0.34 0.02 264));
+  --color-success: light-dark(oklch(0.43 0.13 148), oklch(0.72 0.15 150));
+  --color-warning: light-dark(oklch(0.56 0.13 78), oklch(0.8 0.14 82));
+  --color-danger: light-dark(oklch(0.48 0.16 25), oklch(0.68 0.18 25));
+  --color-consultar: light-dark(oklch(0.52 0.16 245), oklch(0.66 0.16 245));
+  --color-pagar: light-dark(oklch(0.48 0.13 153), oklch(0.66 0.15 153));
+  --color-alerta: light-dark(oklch(0.68 0.14 78), oklch(0.8 0.14 82));
+  --color-reclamo: light-dark(oklch(0.52 0.15 24), oklch(0.67 0.17 24));
+  --color-sedes: light-dark(oklch(0.55 0.11 188), oklch(0.68 0.13 188));
+  --color-focus: light-dark(#006db3, oklch(0.72 0.15 244));
+  --surface-base: light-dark(white, oklch(0.235 0.024 264));
+  --doc-surface: light-dark(white, oklch(0.9 0.015 255));
+  --page-grad-a: light-dark(oklch(0.985 0.008 250), oklch(0.205 0.022 264));
+  --page-grad-b: light-dark(oklch(0.95 0.018 230), oklch(0.15 0.018 258));
   --shadow-panel: 0 18px 60px color-mix(in oklch, var(--color-primary) 14%, transparent);
   --shadow-lift: 0 24px 80px color-mix(in oklch, var(--color-primary) 18%, transparent);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -52,6 +56,14 @@
   --font-body: "Atkinson Hyperlegible", Verdana, sans-serif;
 }
 
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -59,7 +71,7 @@
 html {
   min-width: 320px;
   background:
-    linear-gradient(135deg, oklch(0.985 0.008 250), oklch(0.95 0.018 230)),
+    linear-gradient(135deg, var(--page-grad-a), var(--page-grad-b)),
     var(--color-background);
   color: var(--color-text);
   font-family: var(--font-body);
@@ -234,7 +246,7 @@ a {
 
 .secondary-action {
   padding: 0.76rem 1rem;
-  background: color-mix(in oklch, var(--color-accent) 10%, white);
+  background: color-mix(in oklch, var(--color-accent) 10%, var(--surface-base));
   color: var(--color-primary);
   border: 1px solid color-mix(in oklch, var(--color-accent) 22%, var(--color-border));
 }
@@ -295,7 +307,7 @@ a {
   border: 1px solid color-mix(in oklch, var(--color-accent) 22%, var(--color-border));
   border-radius: 0 0 18px 18px;
   background:
-    linear-gradient(180deg, oklch(0.998 0.004 250), oklch(0.965 0.018 228)),
+    linear-gradient(180deg, var(--color-panel), var(--color-surface)),
     var(--color-background);
   box-shadow: 0 20px 70px color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
@@ -312,7 +324,7 @@ a {
   border-radius: 0;
   background:
     radial-gradient(circle at 82% 24%, color-mix(in oklch, var(--color-accent) 14%, transparent), transparent 34%),
-    linear-gradient(180deg, oklch(0.998 0.004 250), transparent);
+    linear-gradient(180deg, var(--color-panel), transparent);
   box-shadow: none;
   overflow: visible;
 }
@@ -521,7 +533,7 @@ p {
   padding: 0.72rem 0.78rem;
   border: 1px solid color-mix(in oklch, var(--color-accent) 18%, var(--color-border));
   border-radius: 8px;
-  background: color-mix(in oklch, white 88%, var(--color-surface));
+  background: color-mix(in oklch, var(--surface-base) 88%, var(--color-surface));
   box-shadow: 0 12px 32px color-mix(in oklch, var(--color-primary) 9%, transparent);
   color: var(--color-primary);
   font-size: 0.88rem;
@@ -577,7 +589,7 @@ p {
   overflow: hidden;
   border-color: color-mix(in oklch, var(--color-primary) 16%, var(--color-border));
   border-radius: 10px;
-  background: color-mix(in oklch, white 92%, var(--color-panel));
+  background: color-mix(in oklch, var(--surface-base) 92%, var(--color-panel));
   box-shadow: 0 18px 50px color-mix(in oklch, var(--color-primary) 13%, transparent);
 }
 
@@ -647,7 +659,7 @@ p {
   padding: 0.65rem 0.85rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  background: oklch(0.998 0.004 250);
+  background: var(--color-panel);
   color: var(--color-text-strong);
 }
 
@@ -738,7 +750,7 @@ p {
   padding: var(--space-md);
   border: 1px solid color-mix(in oklch, var(--route-color) 22%, var(--color-border));
   border-radius: 10px;
-  background: color-mix(in oklch, white 92%, var(--route-color));
+  background: color-mix(in oklch, var(--surface-base) 92%, var(--route-color));
   box-shadow: 0 16px 36px color-mix(in oklch, var(--color-primary) 10%, transparent);
   transform-origin: center;
 }
@@ -752,7 +764,7 @@ p {
   position: absolute;
   inset: -1px;
   z-index: 0;
-  border: 1px solid color-mix(in oklch, var(--route-color) 58%, white);
+  border: 1px solid color-mix(in oklch, var(--route-color) 58%, var(--surface-base));
   border-radius: inherit;
   opacity: 0;
   pointer-events: none;
@@ -788,7 +800,7 @@ p {
   width: 28px;
   height: 28px;
   border-radius: 999px;
-  background: color-mix(in oklch, var(--route-color) 14%, white);
+  background: color-mix(in oklch, var(--route-color) 14%, var(--surface-base));
   color: color-mix(in oklch, var(--route-color) 82%, var(--color-primary));
   opacity: 1;
   pointer-events: none;
@@ -825,7 +837,7 @@ p {
   width: 44px;
   height: 44px;
   border-radius: 14px;
-  background: color-mix(in oklch, var(--route-color) 12%, white);
+  background: color-mix(in oklch, var(--route-color) 12%, var(--surface-base));
   color: color-mix(in oklch, var(--route-color) 86%, var(--color-primary));
 }
 
@@ -871,7 +883,7 @@ p {
   padding: 0.58rem 0.72rem;
   border: 1px solid color-mix(in oklch, var(--route-color) 34%, var(--color-border));
   border-radius: 999px;
-  background: color-mix(in oklch, var(--route-color) 10%, white);
+  background: color-mix(in oklch, var(--route-color) 10%, var(--surface-base));
   color: color-mix(in oklch, var(--route-color) 86%, var(--color-primary));
   font-size: 0.8rem;
   font-weight: 900;
@@ -891,7 +903,7 @@ p {
   border-radius: 999px;
   background: linear-gradient(
     90deg,
-    color-mix(in oklch, var(--route-color) 82%, white),
+    color-mix(in oklch, var(--route-color) 82%, var(--surface-base)),
     color-mix(in oklch, var(--route-color) 16%, transparent)
   );
   opacity: 0;
@@ -916,7 +928,7 @@ p {
   padding: var(--space-md);
   border: 1px solid color-mix(in oklch, var(--route-color) 12%, var(--color-border));
   border-radius: 10px;
-  background: color-mix(in oklch, white 92%, var(--color-surface));
+  background: color-mix(in oklch, var(--surface-base) 92%, var(--color-surface));
   box-shadow: 0 14px 34px color-mix(in oklch, var(--color-primary) 8%, transparent);
 }
 
@@ -942,7 +954,7 @@ p {
   width: 46px;
   height: 46px;
   border-radius: 999px;
-  background: color-mix(in oklch, var(--route-color) 12%, white);
+  background: color-mix(in oklch, var(--route-color) 12%, var(--surface-base));
   color: color-mix(in oklch, var(--route-color) 82%, var(--color-primary));
 }
 
@@ -995,7 +1007,7 @@ p {
   width: 56px;
   height: 56px;
   border-radius: 999px;
-  background: color-mix(in oklch, var(--color-accent) 10%, white);
+  background: color-mix(in oklch, var(--color-accent) 10%, var(--surface-base));
   color: var(--color-primary);
   box-shadow: 0 12px 30px color-mix(in oklch, var(--color-accent) 14%, transparent);
 }
@@ -1057,7 +1069,7 @@ p {
   width: 44%;
   height: 8px;
   border-radius: 999px;
-  background: color-mix(in oklch, var(--route-color) 78%, oklch(0.99 0.006 250));
+  background: color-mix(in oklch, var(--route-color) 78%, var(--surface-base));
   transform: skewX(-24deg);
 }
 
@@ -1108,7 +1120,7 @@ p {
   width: 46px;
   height: 46px;
   border-radius: 14px;
-  background: color-mix(in oklch, var(--route-color) 18%, oklch(0.99 0.006 250));
+  background: color-mix(in oklch, var(--route-color) 18%, var(--surface-base));
   color: color-mix(in oklch, var(--route-color) 78%, var(--color-primary));
 }
 
@@ -1226,7 +1238,7 @@ p {
   width: 48px;
   height: 48px;
   border-radius: 16px;
-  background: color-mix(in oklch, var(--color-accent) 10%, white);
+  background: color-mix(in oklch, var(--color-accent) 10%, var(--surface-base));
   color: var(--color-primary);
 }
 
@@ -1364,7 +1376,7 @@ p {
   width: max-content;
   padding: 0.34rem 0.6rem;
   border-radius: 999px;
-  background: color-mix(in oklch, var(--color-accent) 10%, white);
+  background: color-mix(in oklch, var(--color-accent) 10%, var(--surface-base));
 }
 
 .mock-result,
@@ -1377,7 +1389,7 @@ p {
 }
 
 .mock-result {
-  background: color-mix(in oklch, var(--color-success) 9%, white);
+  background: color-mix(in oklch, var(--color-success) 9%, var(--surface-base));
   color: var(--color-success);
 }
 
@@ -1436,7 +1448,7 @@ p {
 .token-row span {
   padding: 0.62rem 0.82rem;
   border-radius: 999px;
-  background: color-mix(in oklch, var(--color-secondary) 10%, white);
+  background: color-mix(in oklch, var(--color-secondary) 10%, var(--surface-base));
   color: var(--color-primary);
   font-weight: 800;
 }
@@ -1456,7 +1468,7 @@ p {
   max-height: 100svh;
   min-height: 0;
   border-left: 1px solid var(--color-border);
-  background: color-mix(in oklch, var(--color-primary) 4%, white);
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--surface-base));
 }
 
 .assistant-region.is-minimized {
@@ -1479,7 +1491,7 @@ p {
   position: absolute;
   inset: 0;
   z-index: 4;
-  border: 2px solid color-mix(in oklch, var(--color-accent) 58%, white);
+  border: 2px solid color-mix(in oklch, var(--color-accent) 58%, var(--surface-base));
   border-radius: inherit;
   opacity: 0;
   pointer-events: none;
@@ -1658,7 +1670,7 @@ p {
   padding: var(--space-md);
   border: 1px solid color-mix(in oklch, var(--color-accent) 14%, var(--color-border));
   border-radius: 14px;
-  background: color-mix(in oklch, var(--color-accent) 7%, white);
+  background: color-mix(in oklch, var(--color-accent) 7%, var(--surface-base));
   color: var(--color-primary);
   box-shadow: 0 12px 30px color-mix(in oklch, var(--color-primary) 7%, transparent);
 }
@@ -1696,7 +1708,7 @@ p {
 }
 
 .message.is-thinking {
-  background: color-mix(in oklch, var(--color-accent) 8%, white);
+  background: color-mix(in oklch, var(--color-accent) 8%, var(--surface-base));
   border-color: color-mix(in oklch, var(--color-accent) 20%, var(--color-border));
   color: var(--color-primary);
 }
@@ -1731,7 +1743,7 @@ p {
   padding: var(--space-xs) var(--space-sm);
   border: 1px solid var(--color-border);
   border-radius: 10px;
-  background: color-mix(in oklch, white 92%, var(--color-surface));
+  background: color-mix(in oklch, var(--surface-base) 92%, var(--color-surface));
   color: var(--color-text-strong);
   font-size: 0.82rem;
   font-weight: 800;
@@ -1757,7 +1769,7 @@ p {
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  background: color-mix(in oklch, var(--color-accent) 11%, white);
+  background: color-mix(in oklch, var(--color-accent) 11%, var(--surface-base));
   color: var(--color-accent);
 }
 
@@ -1766,7 +1778,7 @@ p {
   gap: var(--space-xs);
   padding: var(--space-sm) var(--space-md) var(--space-md);
   border-top: 1px solid var(--color-border);
-  background: color-mix(in oklch, white 90%, var(--color-background));
+  background: color-mix(in oklch, var(--surface-base) 90%, var(--color-background));
 }
 
 /* Composer moderno: pill con textarea auto-grow + boton de envio circular. */
@@ -1871,7 +1883,7 @@ p {
   padding: 0.4rem 0.7rem;
   border: 1px solid color-mix(in oklch, var(--color-accent) 22%, var(--color-border));
   border-radius: 999px;
-  background: color-mix(in oklch, var(--color-accent) 7%, white);
+  background: color-mix(in oklch, var(--color-accent) 7%, var(--surface-base));
   color: var(--color-primary);
   font-size: 0.78rem;
   font-weight: 800;
@@ -1879,7 +1891,7 @@ p {
 }
 
 .assistant-quick-link:hover {
-  background: color-mix(in oklch, var(--color-accent) 13%, white);
+  background: color-mix(in oklch, var(--color-accent) 13%, var(--surface-base));
 }
 
 .assistant-quick-link-icon {
@@ -1942,7 +1954,7 @@ p {
     display: grid;
     gap: var(--space-xs);
     padding: var(--space-sm) clamp(var(--space-md), 2vw, var(--space-xl));
-    background: color-mix(in oklch, var(--color-background) 94%, white);
+    background: color-mix(in oklch, var(--color-background) 94%, var(--surface-base));
     border-bottom: 1px solid var(--color-border);
   }
 
@@ -1981,7 +1993,7 @@ p {
     display: grid;
     gap: var(--space-xs);
     padding: var(--space-sm) var(--space-md);
-    background: color-mix(in oklch, var(--color-background) 94%, white);
+    background: color-mix(in oklch, var(--color-background) 94%, var(--surface-base));
     border-bottom: 1px solid var(--color-border);
   }
 
@@ -2127,7 +2139,7 @@ p {
     width: 52px;
     height: 5px;
     border-radius: 999px;
-    background: color-mix(in oklch, var(--color-primary) 30%, white);
+    background: color-mix(in oklch, var(--color-primary) 30%, var(--surface-base));
   }
 
   .desktop-minimize {
@@ -2796,19 +2808,19 @@ p {
 }
 
 .badge-success {
-  background: color-mix(in oklch, var(--color-success) 12%, white);
+  background: color-mix(in oklch, var(--color-success) 12%, var(--surface-base));
   color: var(--color-success);
   border: 1px solid color-mix(in oklch, var(--color-success) 22%, transparent);
 }
 
 .badge-warning {
-  background: color-mix(in oklch, var(--color-warning) 12%, white);
+  background: color-mix(in oklch, var(--color-warning) 12%, var(--surface-base));
   color: color-mix(in oklch, var(--color-warning) 70%, black);
   border: 1px solid color-mix(in oklch, var(--color-warning) 22%, transparent);
 }
 
 .badge-danger {
-  background: color-mix(in oklch, var(--color-danger) 10%, white);
+  background: color-mix(in oklch, var(--color-danger) 10%, var(--surface-base));
   color: var(--color-danger);
   border: 1px solid color-mix(in oklch, var(--color-danger) 22%, transparent);
 }
@@ -2881,7 +2893,7 @@ p {
   padding: var(--space-md);
   border: 1px solid color-mix(in oklch, var(--color-warning) 30%, var(--color-border));
   border-radius: var(--radius-md);
-  background: color-mix(in oklch, var(--color-warning) 6%, white);
+  background: color-mix(in oklch, var(--color-warning) 6%, var(--surface-base));
   color: var(--color-warning);
 }
 
@@ -2905,7 +2917,7 @@ p {
   margin-top: 0.4rem !important;
   padding: 0.4rem 0.6rem;
   border-radius: var(--radius-sm);
-  background: color-mix(in oklch, var(--color-accent) 7%, white);
+  background: color-mix(in oklch, var(--color-accent) 7%, var(--surface-base));
   font-size: 0.8rem !important;
 }
 
@@ -2960,7 +2972,7 @@ p {
   height: 80px;
   border: 3px solid #16236e;
   border-radius: 10px;
-  background: white;
+  background: var(--doc-surface);
   box-shadow: 0 8px 24px color-mix(in oklch, var(--color-primary) 16%, transparent);
 }
 
@@ -3071,7 +3083,7 @@ p {
   padding: var(--space-md);
   border: 1px solid var(--color-border);
   border-radius: 10px;
-  background: white;
+  background: var(--doc-surface);
   box-shadow: 0 8px 24px color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
 
@@ -3137,7 +3149,7 @@ p {
   gap: var(--space-md);
   padding: var(--space-md) var(--space-lg) var(--space-lg);
   border-radius: 14px;
-  background: color-mix(in oklch, white 92%, var(--color-accent));
+  background: color-mix(in oklch, var(--surface-base) 92%, var(--color-accent));
   border: 1px solid color-mix(in oklch, var(--color-accent) 18%, var(--color-border));
   box-shadow: 0 18px 50px color-mix(in oklch, var(--color-primary) 12%, transparent);
   /* Estados altos (formulario de pago) superan la altura fija del hero: se
@@ -3196,7 +3208,7 @@ p {
   height: 26px;
   border: 2px solid var(--color-border);
   border-radius: 50%;
-  background: white;
+  background: var(--doc-surface);
   color: var(--color-muted);
   font-size: 0.72rem;
   font-weight: 800;
@@ -3307,7 +3319,7 @@ p {
   height: 72px;
   border: 3px solid var(--color-primary);
   border-radius: 8px;
-  background: white;
+  background: var(--doc-surface);
   justify-content: center;
   box-shadow: 0 8px 20px color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
@@ -3401,14 +3413,14 @@ p {
   width: 100%;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: white;
+  background: var(--doc-surface);
 }
 
 .hip-doc-back {
   top: 8px;
   left: 6px;
   height: 110px;
-  background: color-mix(in oklch, var(--color-accent) 8%, white);
+  background: color-mix(in oklch, var(--color-accent) 8%, var(--surface-base));
   border-color: color-mix(in oklch, var(--color-accent) 20%, var(--color-border));
 }
 
@@ -3458,7 +3470,7 @@ p {
   margin-top: auto;
   padding: 0.12rem 0.4rem;
   border-radius: 999px;
-  background: color-mix(in oklch, var(--color-danger) 10%, white);
+  background: color-mix(in oklch, var(--color-danger) 10%, var(--surface-base));
   color: var(--color-danger);
   font-size: 0.6rem;
   font-weight: 800;
@@ -3467,7 +3479,7 @@ p {
 }
 
 .hip-doc-badge.hip-badge-warn {
-  background: color-mix(in oklch, var(--color-warning) 10%, white);
+  background: color-mix(in oklch, var(--color-warning) 10%, var(--surface-base));
   color: color-mix(in oklch, var(--color-warning) 70%, black);
   border-color: color-mix(in oklch, var(--color-warning) 22%, transparent);
 }
@@ -3514,7 +3526,7 @@ p {
   padding: var(--space-sm);
   border: 1px solid color-mix(in oklch, var(--color-accent) 20%, var(--color-border));
   border-radius: 8px;
-  background: white;
+  background: var(--doc-surface);
   color: var(--color-accent);
   font-size: 0.68rem;
   font-weight: 700;
@@ -3570,19 +3582,19 @@ p {
 }
 
 .hip-badge-ok {
-  background: color-mix(in oklch, var(--color-success) 12%, white);
+  background: color-mix(in oklch, var(--color-success) 12%, var(--surface-base));
   color: var(--color-success);
   border: 1px solid color-mix(in oklch, var(--color-success) 22%, transparent);
 }
 
 .hip-badge-warn {
-  background: color-mix(in oklch, var(--color-warning) 12%, white);
+  background: color-mix(in oklch, var(--color-warning) 12%, var(--surface-base));
   color: color-mix(in oklch, var(--color-warning) 72%, black);
   border: 1px solid color-mix(in oklch, var(--color-warning) 22%, transparent);
 }
 
 .hip-badge-danger {
-  background: color-mix(in oklch, var(--color-danger) 10%, white);
+  background: color-mix(in oklch, var(--color-danger) 10%, var(--surface-base));
   color: var(--color-danger);
   border: 1px solid color-mix(in oklch, var(--color-danger) 22%, transparent);
 }
@@ -3662,7 +3674,7 @@ p {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: color-mix(in oklch, var(--color-success) 12%, white);
+  background: color-mix(in oklch, var(--color-success) 12%, var(--surface-base));
   color: var(--color-success);
   border: 2px solid color-mix(in oklch, var(--color-success) 24%, transparent);
 }
@@ -3707,7 +3719,7 @@ p {
   padding: var(--space-md);
   border: 1px solid color-mix(in oklch, var(--color-success) 24%, var(--color-border));
   border-radius: var(--radius-md);
-  background: color-mix(in oklch, var(--color-success) 5%, white);
+  background: color-mix(in oklch, var(--color-success) 5%, var(--surface-base));
   animation: hipPanelIn 280ms var(--ease-out) both;
 }
 
@@ -3717,7 +3729,7 @@ p {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: color-mix(in oklch, var(--color-success) 12%, white);
+  background: color-mix(in oklch, var(--color-success) 12%, var(--surface-base));
   color: var(--color-success);
   border: 1px solid color-mix(in oklch, var(--color-success) 24%, transparent);
   flex: 0 0 auto;
@@ -3841,7 +3853,7 @@ p {
   align-items: center;
   padding: 0.4rem var(--space-xs);
   border-radius: var(--radius-sm);
-  background: color-mix(in oklch, var(--color-primary) 6%, white);
+  background: color-mix(in oklch, var(--color-primary) 6%, var(--surface-base));
   border: 1px solid color-mix(in oklch, var(--color-primary) 14%, var(--color-border));
   font-size: 0.82rem;
 }
@@ -3871,7 +3883,7 @@ p {
   padding: 0.48rem 0.7rem;
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-sm);
-  background: white;
+  background: var(--color-panel);
   color: var(--color-text-strong);
   font-size: 0.88rem;
   font-family: "Courier New", monospace;
@@ -3969,7 +3981,7 @@ p {
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  background: color-mix(in oklch, var(--color-success) 12%, white);
+  background: color-mix(in oklch, var(--color-success) 12%, var(--surface-base));
   color: var(--color-success);
   border: 2px solid color-mix(in oklch, var(--color-success) 28%, transparent);
   animation: dotPop 400ms var(--ease-out) both;
@@ -3986,7 +3998,7 @@ p {
   width: 100%;
   border: 1.5px dashed color-mix(in oklch, var(--color-primary) 28%, var(--color-border));
   border-radius: var(--radius-md);
-  background: white;
+  background: var(--doc-surface);
   overflow: hidden;
   font-size: 0.75rem;
 }
@@ -4042,7 +4054,7 @@ p {
   padding: 0.6rem 1rem;
   border: 2px solid var(--color-success);
   border-radius: var(--radius-sm);
-  background: color-mix(in oklch, var(--color-success) 8%, white);
+  background: color-mix(in oklch, var(--color-success) 8%, var(--surface-base));
   color: var(--color-success);
   font-size: 0.82rem;
   font-weight: 800;
@@ -4053,7 +4065,7 @@ p {
 }
 
 .receipt-dl-btn:hover {
-  background: color-mix(in oklch, var(--color-success) 14%, white);
+  background: color-mix(in oklch, var(--color-success) 14%, var(--surface-base));
   transform: translateY(-1px);
 }
 
@@ -4061,3 +4073,13 @@ p {
   transform: translateY(0);
 }
 
+
+
+/* ── Toggle de tema (Bloque 1) ─────────────────────────────────── */
+.site-header .theme-toggle {
+  color: oklch(0.985 0.008 250);
+  background: color-mix(in oklch, white 10%, transparent);
+}
+.site-header .theme-toggle:hover {
+  background: color-mix(in oklch, white 20%, transparent);
+}

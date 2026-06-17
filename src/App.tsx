@@ -33,6 +33,7 @@ import {
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Link, NavLink, Route, Routes, useLocation, useParams } from "react-router-dom";
 import { Assistant, type AssistantCommand } from "./components/assistant/Assistant";
+import { ThemeToggle } from "./components/ThemeToggle";
 import { consultarSAT, type MockResultData } from "./data/mockApi";
 import {
   navItems,
@@ -85,6 +86,7 @@ function App() {
           </nav>
 
           <div className="header-actions">
+            <ThemeToggle />
             <a className="ghost-link" href={externalLinks.mesaPartes} target="_blank" rel="noreferrer">
               Mesa de Partes
             </a>
