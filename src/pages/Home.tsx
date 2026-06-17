@@ -10,7 +10,13 @@ import { SectionHeading } from "../components/SectionHeading";
 import { UniversalActionBox } from "../components/UniversalActionBox";
 import { iconFor } from "../components/icons/iconFor";
 import { paymentTabs } from "../data/satData";
-import { benefitItems, heroAccessItems, routeLanes, urbanIndicators } from "../data/homeData";
+import {
+  benefitItems,
+  heroAccessItems,
+  lifeEvents,
+  routeLanes,
+  urbanIndicators,
+} from "../data/homeData";
 import { satApi, type MockResultData } from "../services/satApi";
 
 export default function Home({
@@ -107,6 +113,23 @@ export default function Home({
               result={searchResult}
               noResult={searched && searchResult === null}
             />
+          </div>
+        </section>
+
+        <section className="life-events" aria-label="Empieza por tu situacion">
+          <span className="eyebrow">¿Que te paso?</span>
+          <div className="life-events-row">
+            {lifeEvents.map((event) => (
+              <button
+                key={event.id}
+                type="button"
+                className="life-event-chip"
+                onClick={() => onAssistantIntent(event.intentId)}
+              >
+                <span aria-hidden="true">{iconFor(event.icon)}</span>
+                {event.label}
+              </button>
+            ))}
           </div>
         </section>
 

@@ -395,6 +395,44 @@
   color: var(--color-success);
 }
 
+/* ── Eventos de vida (Bloque 6, aditivo) ───────────────────── */
+.life-events {
+  display: grid;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+.life-events-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+.life-event-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-height: 44px;
+  padding: 0.5rem 0.95rem;
+  border: 1px solid color-mix(in oklch, var(--color-accent) 24%, var(--color-border));
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--surface-base) 90%, var(--color-accent));
+  color: var(--color-primary);
+  font-size: 0.86rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.life-event-chip:hover {
+  border-color: color-mix(in oklch, var(--color-accent) 44%, var(--color-border));
+  transform: translateY(-1px);
+}
+.life-event-chip span {
+  display: inline-flex;
+  color: var(--color-accent);
+}
+.life-event-chip svg {
+  width: 18px;
+  height: 18px;
+}
+
 @media (max-width: 640px) {
   .sede-filters {
     grid-template-columns: 1fr;

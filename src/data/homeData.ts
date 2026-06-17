@@ -78,6 +78,16 @@ export const routeLanes = [
   },
 ];
 
+// Eventos de vida: entrada por intencion ciudadana que dispara el asistente con
+// la intencion correcta (Bloque 6, aditivo; el rediseno completo de la nav por
+// verbos queda pendiente de validacion del cliente).
+export const lifeEvents = [
+  { id: "compre-auto", label: "Compre un vehiculo", icon: "car", intentId: "intent-declarar" },
+  { id: "vendi-auto", label: "Vendi mi vehiculo", icon: "workflow", intentId: "intent-declarar" },
+  { id: "me-multaron", label: "Me multaron", icon: "shield", intentId: "intent-pagar" },
+  { id: "adulto-mayor", label: "Soy adulto mayor", icon: "heart", intentId: "intent-consultar-deuda" },
+];
+
 export const heroAccessItems = [
   { label: "Agencia Virtual", icon: "shield", href: externalLinks.agenciaVirtual },
   { label: "Mesa de Partes", icon: "form", href: externalLinks.mesaPartes },
