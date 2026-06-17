@@ -1,0 +1,410 @@
+/* Componentes de estrategia (src/features). Importado tras components.css y
+   antes de responsive.css. Paleta OKLCH por tokens, reactiva al tema. */
+
+.feature-section {
+  display: grid;
+  gap: var(--space-lg);
+  margin-top: clamp(var(--space-xl), 4vw, var(--space-2xl));
+}
+
+.feature-card {
+  display: grid;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-panel);
+  box-shadow: var(--shadow-panel);
+}
+
+.feature-head {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.feature-head h3 {
+  color: var(--color-text-strong);
+  font-size: 1.15rem;
+}
+
+.feature-head p {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.feature-disclaimer {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.feature-empty {
+  padding: var(--space-md);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  font-size: 0.88rem;
+}
+
+/* ── Semaforo de papeletas ─────────────────────────────────── */
+.semaforo-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+.semaforo-dot.tone-verde {
+  background: var(--color-success);
+}
+.semaforo-dot.tone-amarillo {
+  background: var(--color-warning);
+}
+.semaforo-dot.tone-rojo {
+  background: var(--color-danger);
+}
+.semaforo-dot.tone-negro {
+  background: light-dark(oklch(0.28 0.02 264), oklch(0.42 0.02 264));
+}
+
+.semaforo-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.76rem;
+  color: var(--color-muted);
+}
+.semaforo-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.semaforo-list {
+  display: grid;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.semaforo-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+.semaforo-item .semaforo-dot {
+  margin-top: 0.35rem;
+}
+.semaforo-body {
+  display: grid;
+  gap: 0.25rem;
+}
+.semaforo-row-top {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+}
+.semaforo-row-top strong {
+  color: var(--color-text-strong);
+  font-family: var(--font-display);
+}
+.semaforo-owner {
+  color: var(--color-muted);
+  font-size: 0.82rem;
+}
+.semaforo-infraccion {
+  color: var(--color-text);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.semaforo-detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  color: var(--color-text);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+.semaforo-detail svg {
+  flex: 0 0 auto;
+  margin-top: 0.15rem;
+  color: var(--color-accent);
+}
+.semaforo-detail.semaforo-danger {
+  color: color-mix(in oklch, var(--color-danger) 76%, var(--color-text-strong));
+}
+.semaforo-detail.semaforo-danger svg {
+  color: var(--color-danger);
+}
+
+/* ── Pre-evaluador 50 UIT ──────────────────────────────────── */
+.uit-form {
+  display: grid;
+  gap: var(--space-sm);
+}
+.uit-question {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.uit-question legend {
+  padding: 0;
+  color: var(--color-text-strong);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.uit-toggle {
+  display: inline-flex;
+  gap: var(--space-xs);
+}
+.uit-toggle button {
+  min-width: 64px;
+  min-height: 40px;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-strong);
+  font-weight: 800;
+  cursor: pointer;
+}
+.uit-toggle button.is-active {
+  border-color: color-mix(in oklch, var(--color-accent) 50%, var(--color-border));
+  background: color-mix(in oklch, var(--color-accent) 14%, var(--surface-base));
+  color: var(--color-primary);
+}
+
+.uit-result {
+  display: grid;
+  gap: var(--space-xs);
+}
+.uit-pending {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-muted);
+  font-size: 0.86rem;
+}
+.uit-eligible,
+.uit-not-eligible {
+  display: grid;
+  gap: 0.3rem;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+.uit-eligible {
+  border-color: color-mix(in oklch, var(--color-success) 30%, var(--color-border));
+  background: color-mix(in oklch, var(--color-success) 9%, var(--surface-base));
+}
+.uit-not-eligible {
+  border-color: color-mix(in oklch, var(--color-warning) 30%, var(--color-border));
+  background: color-mix(in oklch, var(--color-warning) 8%, var(--surface-base));
+}
+.uit-eligible strong,
+.uit-not-eligible strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-text-strong);
+}
+.uit-eligible strong svg {
+  color: var(--color-success);
+}
+.uit-not-eligible strong svg {
+  color: color-mix(in oklch, var(--color-warning) 72%, var(--color-text-strong));
+}
+
+/* ── Verificador anti-suplantacion ─────────────────────────── */
+.verificador-form {
+  display: grid;
+  gap: var(--space-xs);
+}
+.verificador-verdict {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+.verificador-verdict p {
+  font-size: 0.84rem;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+.verificador-verdict strong {
+  color: var(--color-text-strong);
+}
+.verificador-verdict svg {
+  flex: 0 0 auto;
+  margin-top: 0.1rem;
+}
+.verificador-verdict.tone-ok {
+  border-color: color-mix(in oklch, var(--color-success) 32%, var(--color-border));
+  background: color-mix(in oklch, var(--color-success) 9%, var(--surface-base));
+}
+.verificador-verdict.tone-ok svg {
+  color: var(--color-success);
+}
+.verificador-verdict.tone-warn {
+  border-color: color-mix(in oklch, var(--color-warning) 32%, var(--color-border));
+  background: color-mix(in oklch, var(--color-warning) 9%, var(--surface-base));
+}
+.verificador-verdict.tone-warn svg {
+  color: color-mix(in oklch, var(--color-warning) 74%, var(--color-text-strong));
+}
+.verificador-verdict.tone-danger {
+  border-color: color-mix(in oklch, var(--color-danger) 34%, var(--color-border));
+  background: color-mix(in oklch, var(--color-danger) 9%, var(--surface-base));
+}
+.verificador-verdict.tone-danger svg {
+  color: var(--color-danger);
+}
+
+/* ── Localizador de sedes ──────────────────────────────────── */
+.sede-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+.sede-filters .field-label {
+  display: grid;
+  gap: 0.3rem;
+}
+.sede-count {
+  color: var(--color-muted);
+  font-size: 0.82rem;
+}
+.sede-list {
+  display: grid;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sede-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+.sede-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-accent) 12%, var(--surface-base));
+  color: var(--color-accent);
+}
+.sede-item strong {
+  display: block;
+  color: var(--color-text-strong);
+}
+.sede-address,
+.sede-meta {
+  display: block;
+  color: var(--color-muted);
+  font-size: 0.8rem;
+}
+
+/* ── Calendario de vencimientos ────────────────────────────── */
+.venc-list {
+  display: grid;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.venc-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+.venc-item.is-past {
+  opacity: 0.62;
+}
+.venc-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklch, var(--color-accent) 12%, var(--surface-base));
+  color: var(--color-accent);
+}
+.venc-body strong {
+  color: var(--color-text-strong);
+  font-size: 0.92rem;
+}
+.venc-tag {
+  margin-left: 0.3rem;
+  color: var(--color-muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+.venc-date {
+  display: block;
+  color: var(--color-muted);
+  font-size: 0.8rem;
+}
+.venc-status {
+  color: var(--color-text-strong);
+  font-size: 0.8rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.venc-remind {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 38px;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid color-mix(in oklch, var(--color-accent) 28%, var(--color-border));
+  border-radius: 999px;
+  background: var(--color-panel);
+  color: var(--color-accent);
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.venc-remind.is-on {
+  background: color-mix(in oklch, var(--color-success) 12%, var(--surface-base));
+  border-color: color-mix(in oklch, var(--color-success) 30%, var(--color-border));
+  color: var(--color-success);
+}
+
+@media (max-width: 640px) {
+  .sede-filters {
+    grid-template-columns: 1fr;
+  }
+  .venc-item {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .venc-status,
+  .venc-remind {
+    grid-column: 2;
+    justify-self: start;
+  }
+}

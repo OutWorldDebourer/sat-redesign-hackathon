@@ -3,6 +3,8 @@
 
 import { PageFrame } from "../components/PageFrame";
 import { ServiceCard } from "../components/ServiceCard";
+import { CalendarVencimientos } from "../features/CalendarVencimientos";
+import { PapeletaSemaforo } from "../features/PapeletaSemaforo";
 import { serviceItems } from "../data/satData";
 
 export default function Catalog({ kind }: { kind: "tributos" | "papeletas" }) {
@@ -29,6 +31,9 @@ export default function Catalog({ kind }: { kind: "tributos" | "papeletas" }) {
         {items.map((item) => (
           <ServiceCard key={item.id} item={item} />
         ))}
+      </div>
+      <div className="feature-section">
+        {kind === "papeletas" ? <PapeletaSemaforo /> : <CalendarVencimientos />}
       </div>
     </PageFrame>
   );

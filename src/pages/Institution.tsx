@@ -2,6 +2,7 @@
 // Capa institucional, despues de las tareas ciudadanas de alta demanda.
 
 import { PageFrame } from "../components/PageFrame";
+import { VerificadorAntiSuplantacion } from "../features/VerificadorAntiSuplantacion";
 import { sourceLinks } from "../data/satData";
 
 export default function Institution() {
@@ -37,6 +38,9 @@ export default function Institution() {
             ))}
           </ul>
         </div>
+      </div>
+      <div className="feature-section">
+        <VerificadorAntiSuplantacion />
       </div>
     </PageFrame>
   );

@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { PageFrame } from "../components/PageFrame";
+import { Beneficiarios50UIT } from "../features/Beneficiarios50UIT";
 
 export default function Installments() {
   const [amount, setAmount] = useState("840");
@@ -46,6 +47,9 @@ export default function Installments() {
             <li>Inicia en Agencia Virtual o solicita orientacion si el caso es mixto.</li>
           </ol>
         </div>
+      </div>
+      <div className="feature-section">
+        <Beneficiarios50UIT />
       </div>
     </PageFrame>
   );
