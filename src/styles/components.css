@@ -1584,6 +1584,70 @@
   text-align: center;
 }
 
+/* Banner anti-suplantacion persistente (Bloque 5). */
+.assistant-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 var(--space-md);
+  padding: 0.45rem 0.7rem;
+  border: 1px solid color-mix(in oklch, var(--color-warning) 30%, var(--color-border));
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklch, var(--color-warning) 9%, var(--surface-base));
+  color: var(--color-text-strong);
+  font-size: 0.72rem;
+  line-height: 1.3;
+}
+
+.assistant-banner svg {
+  flex: 0 0 auto;
+  color: color-mix(in oklch, var(--color-warning) 78%, var(--color-text-strong));
+}
+
+/* Nota de PII bajo el mensaje del usuario (Bloque 5). */
+.message-pii-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.2rem;
+  color: var(--color-muted);
+  font-size: 0.66rem;
+  font-weight: 700;
+}
+
+/* Chip de escalamiento humano (Bloque 5). */
+.assistant-escalation {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+  padding: 0.6rem 0.8rem;
+  border: 1px solid color-mix(in oklch, var(--color-consultar) 32%, var(--color-border));
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklch, var(--color-consultar) 10%, var(--surface-base));
+  color: var(--color-text-strong);
+}
+
+.assistant-escalation svg {
+  flex: 0 0 auto;
+  color: color-mix(in oklch, var(--color-consultar) 80%, var(--color-text-strong));
+}
+
+.assistant-escalation span {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.assistant-escalation strong {
+  font-size: 0.82rem;
+  color: var(--color-text-strong);
+}
+
+.assistant-escalation small {
+  font-size: 0.68rem;
+  color: var(--color-muted);
+}
+
 /* Accesos oficiales como chips de accion dentro de las acciones rapidas. */
 .assistant-quick-links {
   display: flex;

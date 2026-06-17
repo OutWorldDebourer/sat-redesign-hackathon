@@ -6,15 +6,21 @@ import {
   CreditCard,
   ExternalLink,
   FileUp,
+  Headphones,
+  Lock,
   MessageCircle,
   Minimize2,
   Monitor,
   Send,
+  ShieldAlert,
   Sparkles,
+  Trash2,
 } from "lucide-react";
 import { assistantIntents, quickActions } from "../../data/satData";
-import type { AssistantIntent, ChatMessage, QuickAction } from "../../types";
+import { externalLinks } from "../../data/homeData";
+import type { AssistantIntent, QuickAction } from "../../types";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import { useAssistantChat } from "./hooks/useAssistantChat";
 
 type AssistantProps = {
   pagePath: string;
@@ -27,16 +33,6 @@ export type AssistantCommand = {
 };
 
 type SheetState = "collapsed" | "peek" | "expanded";
-
-const initialMessages: ChatMessage[] = [
-  {
-    id: "welcome",
-    role: "assistant",
-    content:
-      "Hola, soy el asistente SAT. Cuentame si quieres consultar deuda, pagar, declarar, fraccionar o ubicar una sede. Te doy la ruta y el enlace oficial.",
-    createdAt: new Date(0).toISOString(),
-  },
-];
 
 const primaryIntents = [
   "intent-consultar-deuda",
@@ -73,18 +69,16 @@ const COMPOSER_MAX_HEIGHT = 132;
 export function Assistant({ pagePath, command }: AssistantProps) {
   const [isMinimized, setIsMinimized] = useLocalStorage("sat-assistant:minimized", false);
   const [sheetState, setSheetState] = useLocalStorage<SheetState>("sat-assistant:sheet", "collapsed");
-  const [messages, setMessages] = useLocalStorage<ChatMessage[]>("sat-assistant:messages", initialMessages);
-  const [draft, setDraft] = useLocalStorage("sat-assistant:draft", "");
-  const [isThinking, setIsThinking] = useState(false);
   const [isAttending, setIsAttending] = useState(false);
   const [liveMessage, setLiveMessage] = useState("Asistente SAT listo");
+  const { messages, draft, setDraft, isThinking, showEscalation, sendMessage, clearConversation } =
+    useAssistantChat(setLiveMessage);
+
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const threadRef = useRef<HTMLDivElement>(null);
   const lastCommandId = useRef<string | null>(null);
   const attentionTimer = useRef<number | null>(null);
   const attentionFrame = useRef<number | null>(null);
-  const responseTimers = useRef<number[]>([]);
-  const pendingResponses = useRef(0);
 
   const visibleIntents = useMemo(
     () =>
@@ -120,27 +114,16 @@ export function Assistant({ pagePath, command }: AssistantProps) {
 
   useEffect(() => {
     return () => {
-      if (attentionTimer.current) {
-        window.clearTimeout(attentionTimer.current);
-      }
-
-      if (attentionFrame.current) {
-        window.cancelAnimationFrame(attentionFrame.current);
-      }
-
-      responseTimers.current.forEach((timer) => window.clearTimeout(timer));
+      if (attentionTimer.current) window.clearTimeout(attentionTimer.current);
+      if (attentionFrame.current) window.cancelAnimationFrame(attentionFrame.current);
     };
   }, []);
 
   useEffect(() => {
     const thread = threadRef.current;
     if (!thread) return;
-
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    thread.scrollTo({
-      top: thread.scrollHeight,
-      behavior: prefersReducedMotion ? "auto" : "smooth",
-    });
+    thread.scrollTo({ top: thread.scrollHeight, behavior: prefersReducedMotion ? "auto" : "smooth" });
   }, [messages, isThinking]);
 
   useEffect(() => {
@@ -152,14 +135,8 @@ export function Assistant({ pagePath, command }: AssistantProps) {
   }, [draft, supportsFieldSizing]);
 
   const triggerAssistantAttention = () => {
-    if (attentionTimer.current) {
-      window.clearTimeout(attentionTimer.current);
-    }
-
-    if (attentionFrame.current) {
-      window.cancelAnimationFrame(attentionFrame.current);
-    }
-
+    if (attentionTimer.current) window.clearTimeout(attentionTimer.current);
+    if (attentionFrame.current) window.cancelAnimationFrame(attentionFrame.current);
     setIsAttending(false);
     attentionFrame.current = window.requestAnimationFrame(() => {
       setIsAttending(true);
@@ -171,51 +148,16 @@ export function Assistant({ pagePath, command }: AssistantProps) {
     });
   };
 
-  const sendMessage = (text: string, intent?: AssistantIntent) => {
-    const cleanText = text.trim();
-    if (!cleanText) return;
-
-    const matchedIntent =
-      intent ??
-      assistantIntents.find((candidate) =>
-        candidate.patterns.some((pattern) => cleanText.toLowerCase().includes(pattern.toLowerCase())),
-      );
-
-    const userMessage = createMessage("user", cleanText, matchedIntent?.id);
-    setMessages((current) => [...current, userMessage]);
-    setDraft("");
-    setSheetState("expanded");
-    setIsMinimized(false);
-    pendingResponses.current += 1;
-    setIsThinking(true);
-    setLiveMessage("Consulta enviada. Preparando orientacion referencial.");
-
-    const responseTimer = window.setTimeout(() => {
-      const response = matchedIntent
-        ? buildIntentResponse(matchedIntent)
-        : "Puedo orientarte mejor si me dices si quieres consultar, pagar, declarar, fraccionar, reclamar o contactar al SAT.";
-      setMessages((current) => [...current, createMessage("assistant", response, matchedIntent?.id)]);
-      pendingResponses.current = Math.max(0, pendingResponses.current - 1);
-      setIsThinking(pendingResponses.current > 0);
-      setLiveMessage("Respuesta del asistente recibida.");
-      responseTimers.current = responseTimers.current.filter((timer) => timer !== responseTimer);
-    }, 420);
-    responseTimers.current.push(responseTimer);
-  };
-
   useEffect(() => {
     if (!command || lastCommandId.current === command.id) return;
-
     lastCommandId.current = command.id;
     const intent = assistantIntents.find((candidate) => candidate.id === command.intentId);
     if (!intent) return;
-
     setIsMinimized(false);
     setSheetState("expanded");
     triggerAssistantAttention();
-    window.setTimeout(() => {
-      sendMessage(intent.label, intent);
-    }, 120);
+    window.setTimeout(() => sendMessage(intent.label, intent), 120);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [command]);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -275,7 +217,7 @@ export function Assistant({ pagePath, command }: AssistantProps) {
             <span className="assistant-rail-status" aria-hidden="true" />
             <span className="assistant-rail-stack" aria-hidden="true">
               {railLetters.map((letter, index) => (
-                <span key={`${letter}-${index}`}>{letter === " " ? "\u00A0" : letter}</span>
+                <span key={`${letter}-${index}`}>{letter === " " ? " " : letter}</span>
               ))}
             </span>
             <span className="assistant-rail-reopen">Abrir</span>
@@ -319,6 +261,15 @@ export function Assistant({ pagePath, command }: AssistantProps) {
             <button
               className="icon-button"
               type="button"
+              aria-label="Eliminar conversacion"
+              title="Eliminar conversacion"
+              onClick={clearConversation}
+            >
+              <Trash2 size={18} />
+            </button>
+            <button
+              className="icon-button"
+              type="button"
               aria-label={sheetActionLabel}
               aria-expanded={sheetState !== "collapsed"}
               aria-controls="assistant-panel"
@@ -336,6 +287,14 @@ export function Assistant({ pagePath, command }: AssistantProps) {
             </button>
           </div>
         </header>
+
+        <p className="assistant-banner" role="note">
+          <ShieldAlert size={15} aria-hidden="true" />
+          <span>
+            Los tramites del SAT son gratis. Canales oficiales: <strong>sat.gob.pe</strong> y{" "}
+            <strong>app.sat.gob.pe</strong>.
+          </span>
+        </p>
 
         <div className="chat-thread" ref={threadRef} aria-live="polite">
           <div className="assistant-greeting">
@@ -379,9 +338,17 @@ export function Assistant({ pagePath, command }: AssistantProps) {
           </div>
 
           {messages.map((message) => (
-            <article key={message.id} className={`message ${message.role}${message.intentId ? " has-intent" : ""}`}>
+            <article
+              key={message.id}
+              className={`message ${message.role}${message.intentId ? " has-intent" : ""}`}
+            >
               <strong>{message.role === "assistant" ? "SAT guía" : "Tú"}</strong>
               <p>{message.content}</p>
+              {message.containsPII ? (
+                <span className="message-pii-note">
+                  <Lock size={11} aria-hidden="true" /> Datos ocultos al asistente
+                </span>
+              ) : null}
             </article>
           ))}
 
@@ -390,6 +357,17 @@ export function Assistant({ pagePath, command }: AssistantProps) {
               <strong>SAT guía</strong>
               <p>Preparando orientacion referencial...</p>
             </article>
+          ) : null}
+
+          {showEscalation ? (
+            <a className="assistant-escalation" href={externalLinks.citas} target="_blank" rel="noreferrer">
+              <Headphones size={16} aria-hidden="true" />
+              <span>
+                <strong>Hablar con un asesor</strong>
+                <small>Para coactiva, impugnaciones o casos con efectos legales</small>
+              </span>
+              <ExternalLink size={13} aria-hidden="true" />
+            </a>
           ) : null}
         </div>
 
@@ -427,23 +405,6 @@ export function Assistant({ pagePath, command }: AssistantProps) {
       </span>
     </aside>
   );
-}
-
-function createMessage(role: ChatMessage["role"], content: string, intentId?: string): ChatMessage {
-  return {
-    id: `${role}-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-    role,
-    content,
-    createdAt: new Date().toISOString(),
-    intentId,
-  };
-}
-
-function buildIntentResponse(intent: AssistantIntent) {
-  const steps = intent.relatedProcedureIds?.length
-    ? `\n\nRuta sugerida: revisa ${intent.relatedProcedureIds.length} tramite(s) relacionado(s) en la seccion correspondiente.`
-    : "";
-  return `${intent.response}${steps}\n\nRecuerda validar montos, plazos y requisitos en la fuente oficial SAT.`;
 }
 
 export default Assistant;

@@ -141,4 +141,6 @@ export type ChatMessage = {
   createdAt: string;
   intentId?: string;
   quickActions?: QuickAction[];
+  /** El mensaje del usuario contiene PII (DNI/RUC/placa); se anonimiza antes de enviarlo al LLM. */
+  containsPII?: boolean;
 };
