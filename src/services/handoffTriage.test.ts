@@ -5,31 +5,62 @@ import { triageHandoff } from "./handoffTriage";
 function u(content: string, i = 0): ChatMessage {
   return { id: `u-${i}`, role: "user", content, createdAt: "" };
 }
+function a(content: string, i = 0): ChatMessage {
+  return { id: `a-${i}`, role: "assistant", content, createdAt: "" };
+}
 
 describe("triageHandoff", () => {
   it("deriva caso coactivo como critico con contacto humano", () => {
-    const a = triageHandoff([u("mi placa esta en cobranza coactiva y me embargan")]);
-    expect(a.handoffRequired).toBe(true);
-    expect(a.priority).toBe("critical");
-    expect(a.userContactNeeded).toBe(true);
-    expect(a.reasonCode).toBe("legal_coactiva");
+    const r = triageHandoff([u("mi placa esta en cobranza coactiva y me embargan")]);
+    expect(r.handoffRequired).toBe(true);
+    expect(r.priority).toBe("critical");
+    expect(r.userContactNeeded).toBe(true);
+    expect(r.reasonCode).toBe("legal_coactiva");
   });
 
   it("marca pago fallido como alta prioridad", () => {
-    const a = triageHandoff([u("pague pero fallo el pago y me cobraron igual")]);
-    expect(a.handoffRequired).toBe(true);
-    expect(a.priority).toBe("high");
-    expect(a.reasonCode).toBe("pago_fallido");
+    const r = triageHandoff([u("pague pero fallo el pago y me cobraron igual")]);
+    expect(r.handoffRequired).toBe(true);
+    expect(r.priority).toBe("high");
+    expect(r.reasonCode).toBe("pago_fallido");
+  });
+
+  it("deriva consulta juridica compleja (impugnacion/prescripcion) como alta", () => {
+    const r = triageHandoff([u("quiero impugnar la papeleta y alegar prescripcion")]);
+    expect(r.handoffRequired).toBe(true);
+    expect(r.priority).toBe("high");
+    expect(r.reasonCode).toBe("consulta_compleja_juridica");
+    expect(r.userContactNeeded).toBe(true);
+  });
+
+  it("reserva tributaria: deuda propia NO deriva a humano, pide autenticacion", () => {
+    const r = triageHandoff([u("quiero ver mi deuda, cuanto debo")]);
+    expect(r.reasonCode).toBe("reserva_tributaria");
+    expect(r.handoffRequired).toBe(false);
+    expect(r.userContactNeeded).toBe(false);
+    expect(r.suggestedNextAction.toLowerCase()).toContain("sesion");
+  });
+
+  it("baja confianza / fuera de alcance: deriva tras fallback repetido", () => {
+    const r = triageHandoff([
+      u("una cosa rara", 1),
+      a("Puedo orientarte mejor si me dices que necesitas", 1),
+      u("otra cosa", 2),
+      a("Puedo orientarte mejor si me dices que necesitas", 2),
+    ]);
+    expect(r.handoffRequired).toBe(true);
+    expect(r.reasonCode).toBe("baja_confianza");
   });
 
   it("no deriva una consulta simple", () => {
-    const a = triageHandoff([u("como pago mi predial")]);
-    expect(a.handoffRequired).toBe(false);
+    const r = triageHandoff([u("como pago mi predial")]);
+    expect(r.handoffRequired).toBe(false);
+    expect(r.reasonCode).toBe("ninguno");
   });
 
   it("deriva tras multiples intentos sin resolver", () => {
-    const a = triageHandoff([u("hola", 1), u("no se", 2), u("ayuda", 3), u("sigo sin entender", 4)]);
-    expect(a.handoffRequired).toBe(true);
-    expect(a.reasonCode).toBe("intentos_multiples");
+    const r = triageHandoff([u("hola", 1), u("no se", 2), u("ayuda", 3), u("sigo sin entender", 4)]);
+    expect(r.handoffRequired).toBe(true);
+    expect(r.reasonCode).toBe("intentos_multiples");
   });
 });

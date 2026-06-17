@@ -18,6 +18,7 @@ export type HandoffAssessment = {
   suggestedNextAction: string;
 };
 
+// Reglas por palabra clave en orden de prioridad (la primera que dispara gana).
 const RULES: {
   code: string;
   re: RegExp;
@@ -28,7 +29,7 @@ const RULES: {
 }[] = [
   {
     code: "legal_coactiva",
-    re: /coactiv|embargo|remate|captur|internad|comiso|prescripc|medida cautelar|notificaci[oó]n de cobranza|resoluci[oó]n de ejecuci[oó]n/i,
+    re: /coactiv|embargo|remate|captur|internad|comiso|medida cautelar|notificaci[oó]n de cobranza|resoluci[oó]n de ejecuci[oó]n/i,
     priority: "critical",
     reason: "Caso con efectos juridicos (coactiva/embargo/medida cautelar).",
     contact: true,
@@ -51,6 +52,14 @@ const RULES: {
     next: "Derivar a Mesa de Partes / integridad@sat.gob.pe y registrar el caso.",
   },
   {
+    code: "consulta_compleja_juridica",
+    re: /impugn|descargo|prescripci[oó]n|recurso de reclamaci|apelaci[oó]n|nulidad|fiscalizaci[oó]n|terceri[ao]|determinaci[oó]n de deuda|resoluci[oó]n de determinaci/i,
+    priority: "high",
+    reason: "Consulta juridico-tributaria compleja (impugnacion, prescripcion, recurso).",
+    contact: true,
+    next: "Derivar a un asesor tributario; el chat solo orienta, no resuelve el recurso.",
+  },
+  {
     code: "frustracion",
     re: /no entiendo nada|p[eé]simo|in[uú]til|no sirve|ya te dije|est[oó]y harto|esto es un|no me ayuda|terrible|rid[ií]culo/i,
     priority: "medium",
@@ -59,6 +68,15 @@ const RULES: {
     next: "Ofrecer un asesor humano y disculparse por la friccion.",
   },
 ];
+
+// Solicitud de deuda propia / datos individuales -> reserva tributaria (NO es
+// handoff humano: es una compuerta de autenticacion).
+const RESERVA_RE =
+  /\bmis? deuda|cuanto (?:debo|adeudo)|a mi nombre|mis papeletas|mi saldo|estado de cuenta|ver mi deuda|consultar mi deuda|iniciar sesi[oó]n|autenticar|loguear/i;
+
+// Senales de baja confianza / fuera de alcance: el asistente cayo a fallback.
+const FALLBACK_RE =
+  /Puedo orientarte mejor si me dices|sin conexion al asistente|no puedo responder|no encontre/i;
 
 const TEMAS: { re: RegExp; tema: string }[] = [
   { re: /papeleta|infracci[oó]n|placa/i, tema: "papeletas" },
@@ -80,12 +98,9 @@ export function triageHandoff(messages: ChatMessage[]): HandoffAssessment {
   const tema = detectTema(allUserText);
   const userTurns = userMessages.length;
   const hasPII = userMessages.some((m) => m.containsPII) || containsPII(allUserText);
+  const fallbackCount = messages.filter((m) => m.role === "assistant" && FALLBACK_RE.test(m.content)).length;
 
-  // 1) Reglas por palabra clave (la primera que dispara fija prioridad base).
   const matched = RULES.find((r) => r.re.test(allUserText));
-
-  // 2) Senales acumulativas.
-  const manyTurns = userTurns >= 4; // varios intentos sin cerrar
 
   let priority: HandoffPriority = matched?.priority ?? "low";
   let required = Boolean(matched);
@@ -94,16 +109,32 @@ export function triageHandoff(messages: ChatMessage[]): HandoffAssessment {
   let userContactNeeded = matched?.contact ?? false;
   let suggestedNextAction = matched?.next ?? "Continuar la orientacion automatica.";
 
-  if (!matched && manyTurns) {
-    required = true;
-    reasonCode = "intentos_multiples";
-    priority = "medium";
-    handoffReason = `El usuario lleva ${userTurns} consultas sin resolver el caso.`;
-    userContactNeeded = false;
-    suggestedNextAction = "Ofrecer un asesor humano para destrabar el caso.";
+  if (!matched) {
+    if (RESERVA_RE.test(allUserText)) {
+      // Reserva tributaria: NO se deriva a humano; se pide autenticacion.
+      required = false;
+      reasonCode = "reserva_tributaria";
+      priority = "medium";
+      handoffReason = "Solicita datos economicos individuales: requiere identidad autenticada (reserva tributaria, art. 85 CT).";
+      userContactNeeded = false;
+      suggestedNextAction = "Pedir inicio de sesion en Agencia Virtual antes de mostrar montos individuales.";
+    } else if (fallbackCount >= 2) {
+      required = true;
+      reasonCode = "baja_confianza";
+      priority = "medium";
+      handoffReason = "El asistente no logro resolver (baja confianza o posible consulta fuera del alcance del SAT).";
+      userContactNeeded = false;
+      suggestedNextAction = "Ofrecer un asesor humano; el caso supera la orientacion automatica.";
+    } else if (userTurns >= 4) {
+      required = true;
+      reasonCode = "intentos_multiples";
+      priority = "medium";
+      handoffReason = `El usuario lleva ${userTurns} consultas sin resolver el caso.`;
+      userContactNeeded = false;
+      suggestedNextAction = "Ofrecer un asesor humano para destrabar el caso.";
+    }
   }
 
-  // PII eleva mínimamente la prioridad (reserva tributaria) sin forzar handoff.
   if (hasPII && priority === "low") priority = "medium";
 
   const summary = `Tema: ${tema}. Turnos del usuario: ${userTurns}. ${

@@ -25,6 +25,12 @@ pnpm-debug.log*
 *.webp
 *.gif
 audit-screens/
+*.network-response
+*.network-request
+
+# Test/runner artifacts
+test-results/
+coverage/
 
 # OS/editor noise
 .DS_Store

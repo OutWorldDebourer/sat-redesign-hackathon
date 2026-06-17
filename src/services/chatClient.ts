@@ -8,8 +8,13 @@ import type { ChatApiMessage } from "../data/chatConfig";
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
 const CHAT_ENDPOINT = `${API_BASE}/api/chat`;
 
-/** El chat real solo se intenta si esta habilitado por entorno. */
-export const CHAT_ENABLED = import.meta.env.VITE_CHAT_ENABLED === "true";
+/**
+ * Por defecto el cliente INTENTA el backend (/api/chat) y degrada a canned ante
+ * cualquier fallo (incluido 503 missing_api_key). Asi, al provisionar la clave
+ * el chat real se activa sin rebuild. Para forzar solo-canned (p. ej. sin
+ * backend), define VITE_CHAT_ENABLED="false".
+ */
+export const CHAT_ENABLED = import.meta.env.VITE_CHAT_ENABLED !== "false";
 
 export type ChatErrorKind =
   | "unavailable" // 503: backend sin clave provisionada

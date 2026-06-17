@@ -52,7 +52,7 @@ El chat fijo funciona en dos modos:
 
 | Variable | Default | Descripcion |
 |---|---|---|
-| `VITE_CHAT_ENABLED` | `false` | `true` activa la llamada al backend; con `false` o ante error, usa el fallback canned. |
+| `VITE_CHAT_ENABLED` | (intenta) | Por defecto el cliente intenta `/api/chat` y degrada a canned si falla; `"false"` fuerza solo-canned. |
 | `VITE_API_MODE` | `mock` | Origen de datos del adapter (`mock` / `real`). |
 | `VITE_API_BASE_URL` | (vacío) | Base del backend; vacío = mismo origen (`/api`). |
 
@@ -60,10 +60,9 @@ El chat fijo funciona en dos modos:
 
 ### Activar el chat real y redeploy (Vercel)
 
-1. En Vercel → Project `sat-redesign-hackathon` → Settings → Environment Variables: agregar `DEEPSEEK_API_KEY` (Production) y, opcionalmente, `DEEPSEEK_MODEL` / `DEEPSEEK_BASE_URL`.
-2. Agregar `VITE_CHAT_ENABLED=true`.
-3. Redeploy: `vercel --prod` (o un push a la rama conectada).
-4. Verificar: `POST /api/chat` ya no devuelve `missing_api_key` y el chat responde en streaming.
+1. En Vercel → Project `sat-redesign-hackathon` → Settings → Environment Variables: agregar `DEEPSEEK_API_KEY` (Production) y, opcionalmente, `DEEPSEEK_MODEL_FAST` / `DEEPSEEK_MODEL_THINK` / `DEEPSEEK_BASE_URL`.
+2. Redeploy: `vercel --prod` (o un push a la rama conectada). No requiere `VITE_CHAT_ENABLED`: el cliente ya intenta el backend por defecto.
+3. Verificar: `POST /api/chat` ya no devuelve `missing_api_key` y el chat responde en streaming (normal o modo pensar).
 
 **Blocker actual:** mientras `DEEPSEEK_API_KEY` no este provisionada, el chat IA real queda inhabilitado y opera en fallback canned seguro. Es la unica dependencia externa pendiente del proyecto.
 
