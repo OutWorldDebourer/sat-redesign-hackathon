@@ -131,9 +131,10 @@ export default async function handler(req: Request): Promise<Response> {
 
   const apiKey = process.env.DEEPSEEK_API_KEY;
   if (!apiKey) {
-    // Sin clave provisionada: el chat real no esta disponible; el cliente
-    // degrada a respuestas canned. No es un error del cliente.
-    return json({ error: "chat_unavailable", reason: "missing_api_key" }, 503);
+    // Sin clave provisionada: degradacion SUAVE (200 + envelope JSON), no un
+    // error 5xx, para que el navegador no registre ruido en consola. El cliente
+    // detecta el envelope (content-type json, no event-stream) y cae a canned.
+    return json({ error: "chat_unavailable", reason: "missing_api_key" }, 200);
   }
 
   const ip =

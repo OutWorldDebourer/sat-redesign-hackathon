@@ -77,6 +77,20 @@ export async function streamChat({
     throw new ChatStreamError("server", res.status);
   }
 
+  // Degradacion suave: el backend devuelve 200 con un envelope JSON (no un
+  // stream) cuando no hay clave provisionada. Se detecta por content-type y se
+  // degrada a canned sin ruido de consola (no es un 5xx).
+  const contentType = res.headers.get("content-type") ?? "";
+  if (!contentType.includes("text/event-stream")) {
+    let reason = "";
+    try {
+      reason = ((await res.json()) as { reason?: string })?.reason ?? "";
+    } catch {
+      /* sin cuerpo util */
+    }
+    throw new ChatStreamError(reason === "missing_api_key" ? "unavailable" : "server");
+  }
+
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
