@@ -1,0 +1,357 @@
+/* Dashboard del asistente humano (Fase 9). Diseño Stitch en
+   Docs/08-dashboard-asistente-stitch. Tokens OKLCH, reactivo al tema.
+   Importado tras features.css y antes de responsive.css. */
+
+/* En la ruta del asesor no se monta el chat ciudadano: el shell es 1 columna. */
+.app-shell.is-dashboard {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.dashboard {
+  display: grid;
+  gap: var(--space-lg);
+  max-width: 1200px;
+  margin-inline: auto;
+}
+
+.dashboard-refresh {
+  min-height: 38px;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-panel);
+  color: var(--color-accent);
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.dashboard-refresh:hover {
+  border-color: color-mix(in oklch, var(--color-accent) 32%, var(--color-border));
+}
+
+.dashboard-head {
+  display: grid;
+  gap: 0.25rem;
+}
+.dashboard-head h1 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+}
+.dashboard-head p {
+  color: var(--color-muted);
+}
+
+/* Metricas */
+.dashboard-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+.metric-card {
+  display: grid;
+  gap: 0.1rem;
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-panel);
+  box-shadow: 0 10px 28px color-mix(in oklch, var(--color-primary) 7%, transparent);
+}
+.metric-card strong {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  line-height: 1;
+  color: var(--color-text-strong);
+}
+.metric-card span {
+  color: var(--color-muted);
+  font-size: 0.8rem;
+}
+.metric-card.is-critical strong {
+  color: var(--color-danger);
+}
+
+/* Filtros */
+.dashboard-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+}
+.filter-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.filter-group button {
+  min-height: 38px;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-panel);
+  color: var(--color-muted);
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.filter-group button.is-active {
+  border-color: color-mix(in oklch, var(--color-accent) 45%, var(--color-border));
+  background: color-mix(in oklch, var(--color-accent) 14%, var(--surface-base));
+  color: var(--color-primary);
+}
+.filter-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-text-strong);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.filter-select select {
+  min-height: 38px;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-panel);
+  color: var(--color-text-strong);
+}
+.filter-channel {
+  color: var(--color-muted);
+  font-size: 0.8rem;
+}
+.dashboard-count {
+  margin-left: auto;
+  color: var(--color-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+/* Cuerpo: cola + detalle */
+.dashboard-body {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+.ticket-queue {
+  display: grid;
+  gap: var(--space-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.queue-empty {
+  padding: var(--space-md);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-muted);
+  font-size: 0.88rem;
+}
+.ticket-item {
+  display: flex;
+  gap: var(--space-xs);
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-panel);
+  text-align: left;
+  cursor: pointer;
+}
+.ticket-item:hover {
+  border-color: color-mix(in oklch, var(--color-accent) 32%, var(--color-border));
+}
+.ticket-item.is-selected {
+  border-color: var(--color-accent);
+  background: color-mix(in oklch, var(--color-accent) 8%, var(--surface-base));
+}
+.prio-dot {
+  width: 12px;
+  height: 12px;
+  margin-top: 0.3rem;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+.prio-critical {
+  background: var(--color-danger);
+}
+.prio-high {
+  background: var(--color-alerta);
+}
+.prio-medium {
+  background: var(--color-consultar);
+}
+.prio-low {
+  background: var(--color-muted);
+}
+.ticket-main {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+.ticket-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+}
+.ticket-row strong {
+  color: var(--color-text-strong);
+  font-size: 0.86rem;
+}
+.ticket-status,
+.tag {
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 800;
+  background: color-mix(in oklch, var(--color-muted) 16%, var(--surface-base));
+  color: var(--color-text-strong);
+}
+.status-abierto {
+  background: color-mix(in oklch, var(--color-accent) 16%, var(--surface-base));
+  color: var(--color-primary);
+}
+.status-en_progreso {
+  background: color-mix(in oklch, var(--color-warning) 16%, var(--surface-base));
+  color: color-mix(in oklch, var(--color-warning) 72%, var(--color-text-strong));
+}
+.status-cerrado {
+  background: color-mix(in oklch, var(--color-success) 14%, var(--surface-base));
+  color: var(--color-success);
+}
+.ticket-reason {
+  color: var(--color-text);
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+.ticket-meta {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+}
+
+/* Detalle */
+.ticket-detail {
+  min-height: 320px;
+}
+.detail-empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-2xl) var(--space-lg);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-muted);
+  text-align: center;
+}
+.detail-card {
+  display: grid;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-panel);
+  box-shadow: var(--shadow-panel);
+}
+.detail-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+.detail-head h2 {
+  font-size: 1.2rem;
+}
+.detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+.prio-tag.prio-critical {
+  background: color-mix(in oklch, var(--color-danger) 14%, var(--surface-base));
+  color: var(--color-danger);
+}
+.prio-tag.prio-high {
+  background: color-mix(in oklch, var(--color-alerta) 18%, var(--surface-base));
+  color: color-mix(in oklch, var(--color-alerta) 72%, var(--color-text-strong));
+}
+.prio-tag.prio-medium {
+  background: color-mix(in oklch, var(--color-consultar) 14%, var(--surface-base));
+  color: var(--color-consultar);
+}
+.tag-warn {
+  background: color-mix(in oklch, var(--color-warning) 16%, var(--surface-base));
+  color: color-mix(in oklch, var(--color-warning) 72%, var(--color-text-strong));
+}
+.detail-assigned {
+  color: var(--color-muted);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+.detail-fields {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+}
+.detail-fields dt {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-top: 0.4rem;
+}
+.detail-fields dd {
+  margin: 0;
+  color: var(--color-text-strong);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+.detail-transcript {
+  display: grid;
+  gap: 0.3rem;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+.turn {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--color-text);
+}
+.turn-user {
+  color: var(--color-text-strong);
+}
+.detail-respond {
+  display: grid;
+  gap: 0.3rem;
+}
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+.detail-actions .primary-action,
+.detail-actions .secondary-action {
+  min-height: 40px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.82rem;
+}
+.dashboard-notice {
+  min-height: 1.2rem;
+  color: var(--color-success);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.dashboard-foot a {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .dashboard-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .dashboard-body {
+    grid-template-columns: 1fr;
+  }
+}

@@ -18,6 +18,7 @@ const Installments = lazy(() => import("./pages/Installments"));
 const Offices = lazy(() => import("./pages/Offices"));
 const Institution = lazy(() => import("./pages/Institution"));
 const ProcedureDetail = lazy(() => import("./pages/ProcedureDetail"));
+const AssistantDashboard = lazy(() => import("./pages/AssistantDashboard"));
 
 function RouteFallback() {
   return (
@@ -36,8 +37,11 @@ function App() {
     setAssistantCommand({ id: `${intentId}-${Date.now()}`, intentId });
   };
 
+  // El dashboard del asesor no muestra el chat ciudadano (UX coherente).
+  const isDashboard = location.pathname === "/asistente";
+
   return (
-    <div className="app-shell">
+    <div className={`app-shell${isDashboard ? " is-dashboard" : ""}`}>
       <div className="site-region">
         <header className="site-header">
           <Link className="brand" to="/" aria-label="Ir al inicio SAT">
@@ -101,6 +105,7 @@ function App() {
               <Route path="/fraccionamiento" element={<Installments />} />
               <Route path="/atencion-sedes" element={<Offices />} />
               <Route path="/institucion" element={<Institution />} />
+              <Route path="/asistente" element={<AssistantDashboard />} />
               <Route path="/tramite/:id" element={<ProcedureDetail />} />
             </Routes>
           </Suspense>
@@ -145,7 +150,7 @@ function App() {
         </footer>
       </div>
 
-      <Assistant pagePath={location.pathname} command={assistantCommand} />
+      {isDashboard ? null : <Assistant pagePath={location.pathname} command={assistantCommand} />}
     </div>
   );
 }

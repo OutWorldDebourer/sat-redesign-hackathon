@@ -12,6 +12,7 @@ Route-level pages, one per file, default-exported and loaded via `React.lazy` in
 - `Offices.tsx` — Offices and channels. Exports: `default`.
 - `Institution.tsx` — Institutional page and official sources. Exports: `default`.
 - `ProcedureDetail.tsx` — Procedure detail by `:id` param. Exports: `default`.
+- `AssistantDashboard.tsx` — Human-assistant dashboard (`/asistente`): handoff ticket queue, filters, detail, summary, actions, metrics. Reads `services/handoffClient`. Exports: `default`.
 
 ## Related
 

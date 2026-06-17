@@ -78,6 +78,7 @@ export function Assistant({ pagePath, command }: AssistantProps) {
     setDraft,
     isThinking,
     isReasoning,
+    activeThink,
     mode,
     setMode,
     showEscalation,
@@ -369,7 +370,7 @@ export function Assistant({ pagePath, command }: AssistantProps) {
           {isThinking ? (
             <article className="message assistant is-thinking">
               <strong>SAT guía</strong>
-              <p>{isReasoning ? "Analizando tu caso (modo pensar)…" : "Preparando orientacion referencial…"}</p>
+              <p>{isReasoning || activeThink ? "Analizando tu caso (modo pensar)…" : "Preparando orientacion referencial…"}</p>
             </article>
           ) : null}
 

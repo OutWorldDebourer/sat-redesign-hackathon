@@ -46,6 +46,8 @@ export type UseAssistantChat = {
   setDraft: (value: string) => void;
   isThinking: boolean;
   isReasoning: boolean;
+  /** El envio en curso corre en modo pensar (toggle o auto-escalado). */
+  activeThink: boolean;
   mode: ChatMode;
   setMode: (mode: ChatMode) => void;
   showEscalation: boolean;
@@ -64,6 +66,7 @@ export function useAssistantChat(onAnnounce: (message: string) => void): UseAssi
   const [draft, setDraft] = useLocalStorage("sat-assistant:draft", "");
   const [isThinking, setIsThinking] = useState(false);
   const [isReasoning, setIsReasoning] = useState(false);
+  const [activeThink, setActiveThink] = useState(false);
   const [mode, setMode] = useState<ChatMode>("normal");
   const [showEscalation, setShowEscalation] = useState(false);
   const [handoff, setHandoff] = useState<HandoffAssessment | null>(null);
@@ -116,6 +119,7 @@ export function useAssistantChat(onAnnounce: (message: string) => void): UseAssi
       abortRef.current?.abort();
       const controller = new AbortController();
       abortRef.current = controller;
+      setActiveThink(streamMode === "think");
 
       const apiMessages: ChatApiMessage[] = history
         .filter((m) => m.id !== WELCOME_ID)
@@ -167,6 +171,7 @@ export function useAssistantChat(onAnnounce: (message: string) => void): UseAssi
           abortRef.current = null;
           setIsThinking(false);
           setIsReasoning(false);
+          setActiveThink(false);
         }
       }
     },
@@ -224,6 +229,7 @@ export function useAssistantChat(onAnnounce: (message: string) => void): UseAssi
     setDraft("");
     setIsThinking(false);
     setIsReasoning(false);
+    setActiveThink(false);
     setShowEscalation(false);
     setHandoff(null);
     setHandoffTicket(null);
@@ -236,6 +242,7 @@ export function useAssistantChat(onAnnounce: (message: string) => void): UseAssi
     setDraft,
     isThinking,
     isReasoning,
+    activeThink,
     mode,
     setMode,
     showEscalation,
