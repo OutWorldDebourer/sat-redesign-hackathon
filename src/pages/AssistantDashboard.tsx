@@ -150,9 +150,11 @@ export default function AssistantDashboard() {
             </button>
           ))}
         </div>
-        <label className="filter-select">
+        <label className="filter-select" htmlFor="dash-priority">
           Prioridad
           <select
+            id="dash-priority"
+            name="priority"
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value as HandoffPriority | "todas")}
           >
