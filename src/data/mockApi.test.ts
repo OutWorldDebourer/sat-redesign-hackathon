@@ -25,6 +25,18 @@ describe("consultarSAT", () => {
     expect(consultarSAT("EXP-2024-001").status).toBe("success");
   });
 
+  it("resuelve un codigo de pago (pestaña codigo)", () => {
+    const r = consultarSAT("CP-2026-018");
+    expect(r.status).toBe("success");
+    if (r.status === "success") expect(r.type).toBe("codigo");
+  });
+
+  it("resuelve un RUC y expone el estado en coactivo", () => {
+    expect(consultarSAT("20554871093").status).toBe("success");
+    const r = consultarSAT("ABC-250");
+    if (r.status === "success") expect(r.data.estado).toBe("En coactivo");
+  });
+
   it("devuelve error ante un dato desconocido", () => {
     expect(consultarSAT("ZZZ-999").status).toBe("error");
   });
