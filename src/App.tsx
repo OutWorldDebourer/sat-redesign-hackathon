@@ -1,18 +1,19 @@
 import {
   AlertCircle,
+  AlertTriangle,
   ArrowRight,
   BadgeCheck,
   Building2,
   CalendarClock,
   CalendarDays,
   Car,
+  Check,
   CheckCircle2,
   ChevronRight,
   CircleDollarSign,
-  Clock,
   ClipboardList,
+  Clock,
   CreditCard,
-  FileQuestion,
   FileText,
   Heart,
   Landmark,
@@ -46,131 +47,13 @@ import {
   sanitizeQuery,
   validateQuery,
 } from "./utils/inputValidation";
-
-const externalLinks = {
-  agenciaVirtual: "https://www.sat.gob.pe/websitev9/Servicios/AgenciaVirtual",
-  mesaPartes: "https://www.sat.gob.pe/WebSiteV9/Tramites/MesaPartesDigital",
-  citas: "https://www.sat.gob.pe/WebSiteV9/CanalesAtencion/CitasSAT",
-  pagos: "https://www.sat.gob.pe/WebSiteV9/Inicio/ciudadano/p/pagosenlinea",
-};
-
-const routeLanes = [
-  {
-    id: "papeleta",
-    title: "Papeleta",
-    cue: "Consulta, descargos y pago de papeletas.",
-    data: "Placa o N. de papeleta",
-    next: "Ver descuentos y opciones de pago",
-    path: "/papeletas-multas",
-    icon: "shield",
-    tone: "consultar",
-    intentId: "intent-consultar-deuda",
-  },
-  {
-    id: "vehiculo",
-    title: "Vehiculo",
-    cue: "Tramites, transferencias y consultas vehiculares.",
-    data: "Placa",
-    next: "Revisar deuda o declaracion",
-    path: "/tributos",
-    icon: "car",
-    tone: "pagar",
-    intentId: "intent-declarar",
-  },
-  {
-    id: "predio",
-    title: "Predio",
-    cue: "Impuestos, arbitrios y consultas de predio.",
-    data: "Codigo de predio",
-    next: "Consultar o declarar",
-    path: "/tributos",
-    icon: "home",
-    tone: "predio",
-    intentId: "intent-consultar-deuda",
-  },
-  {
-    id: "alcabala",
-    title: "Alcabala",
-    cue: "Compra de inmuebles y declaracion jurada.",
-    data: "DNI / RUC",
-    next: "Liquidar requisitos",
-    path: "/tributos",
-    icon: "file",
-    tone: "alcabala",
-    intentId: "intent-declarar",
-  },
-  {
-    id: "fraccionamiento",
-    title: "Fraccionar",
-    cue: "Fracciona y regulariza tus deudas.",
-    data: "Deuda pendiente",
-    next: "Simular facilidad",
-    path: "/fraccionamiento",
-    icon: "rocket",
-    tone: "fraccionar",
-    intentId: "intent-fraccionar",
-  },
-  {
-    id: "sede",
-    title: "Sede",
-    cue: "Atencion presencial, horarios y ubicacion.",
-    data: "Distrito o sede",
-    next: "Elegir canal",
-    path: "/atencion-sedes",
-    icon: "map",
-    tone: "sedes",
-    intentId: "intent-contactar",
-  },
-];
-
-const heroAccessItems = [
-  { label: "Agencia Virtual", icon: "shield", href: externalLinks.agenciaVirtual },
-  { label: "Mesa de Partes", icon: "form", href: externalLinks.mesaPartes },
-  { label: "Citas", icon: "calendar", href: externalLinks.citas },
-  { label: "Sedes y canales", icon: "map", path: "/atencion-sedes" },
-];
-
-const urbanIndicators = [
-  {
-    title: "Plazos proximos",
-    value: "3 obligaciones",
-    copy: "vencen pronto",
-    action: "Ver calendario",
-    icon: "clock",
-    tone: "consultar",
-  },
-  {
-    title: "Ahorra tiempo",
-    value: "Paga en linea",
-    copy: "y evita colas",
-    action: "Ir a pagar",
-    icon: "wallet",
-    tone: "pagar",
-  },
-  {
-    title: "Evita recargos",
-    value: "Manten tus pagos",
-    copy: "al dia",
-    action: "Mas informacion",
-    icon: "calendarDays",
-    tone: "alcabala",
-  },
-  {
-    title: "Canales oficiales",
-    value: "Sedes, telefonicos",
-    copy: "y digitales",
-    action: "Ver canales",
-    icon: "map",
-    tone: "sedes",
-  },
-];
-
-const benefitItems = [
-  { title: "Mas claro", copy: "Encontrar lo que necesitas en menos pasos.", icon: "heart" },
-  { title: "Mas rapido", copy: "Rutas guiadas que te llevan directo.", icon: "workflow" },
-  { title: "Mas humano", copy: "Un copiloto que te acompana siempre.", icon: "assistant" },
-  { title: "Mas confiable", copy: "Informacion oficial, directa y actualizada.", icon: "badge" },
-];
+import {
+  externalLinks,
+  routeLanes,
+  heroAccessItems,
+  urbanIndicators,
+  benefitItems,
+} from "./data/homeData";
 
 function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -262,7 +145,7 @@ function HomePage({ onAssistantIntent }: { onAssistantIntent: (intentId: string)
   // ── Inline search state (replaces modal) ──────────────────────
   const [activeTab, setActiveTab] = useState(paymentTabs[0].id);
   const [searchResult, setSearchResult] = useState<MockResultData | null>(null);
-  const [searchError, setSearchError] = useState<string | null>(null);
+  const [, setSearchError] = useState<string | null>(null);
   const [searchStep, setSearchStep] = useState<1 | 2 | 3 | 4>(1);
   const [searched, setSearched] = useState(false);
 
@@ -423,56 +306,6 @@ function HomePage({ onAssistantIntent }: { onAssistantIntent: (intentId: string)
         ))}
       </section>
     </>
-  );
-}
-
-function LimaSkyline() {
-  return (
-    <svg className="lima-skyline" viewBox="0 0 820 390" role="img" aria-label="Ilustracion lineal de Lima">
-      <defs>
-        <linearGradient id="skylineWash" x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0%" stopColor="#dff0ff" />
-          <stop offset="100%" stopColor="#9fc7f6" />
-        </linearGradient>
-      </defs>
-      <path
-        className="skyline-haze"
-        fill="url(#skylineWash)"
-        d="M54 322 C155 258 248 276 339 223 C456 155 552 173 766 100 L766 355 L54 355 Z"
-      />
-      <g className="skyline-line">
-        <path d="M68 342 H764" />
-        <path d="M138 342 V184 L168 151 L199 184 V342" />
-        <path d="M151 184 V134 H184 V184" />
-        <path d="M158 134 C160 109 176 109 178 134" />
-        <path d="M162 253 H175 M162 283 H175 M162 313 H175" />
-        <path d="M238 342 V209 L283 132 L328 209 V342" />
-        <path d="M283 132 V82 M271 96 H296" />
-        <path d="M258 236 H309 M270 268 H297 M265 302 H302" />
-        <path d="M368 342 V205 H491 V342" />
-        <path d="M388 205 C401 150 458 150 471 205" />
-        <path d="M414 205 V139 H444 V205" />
-        <path d="M423 139 C424 116 436 116 437 139" />
-        <path d="M392 239 H467 M392 273 H467 M392 307 H467" />
-        <path d="M540 342 V170 L568 139 L598 170 V342" />
-        <path d="M552 170 V116 H586 V170" />
-        <path d="M559 116 C561 94 577 94 579 116" />
-        <path d="M560 238 H580 M560 272 H580 M560 306 H580" />
-        <path d="M628 342 V189 L661 151 L694 189 V342" />
-        <path d="M640 189 V132 H682 V189" />
-        <path d="M648 132 C651 104 671 104 674 132" />
-        <path d="M648 236 H674 M648 270 H674 M648 304 H674" />
-        <path d="M710 342 V221 H744 V342" />
-        <path d="M727 221 V168 M710 168 H744" />
-        <path d="M84 178 C104 162 125 162 145 178" />
-        <path d="M483 103 C503 88 522 88 541 103" />
-        <path d="M600 91 C617 79 632 79 649 91" />
-        <path d="M90 342 C98 313 117 293 139 282" />
-        <path d="M116 342 C114 313 124 292 149 270" />
-        <path d="M107 295 C88 291 75 298 65 315" />
-        <path d="M119 287 C137 276 153 279 169 294" />
-      </g>
-    </svg>
   );
 }
 
@@ -870,27 +703,6 @@ function ProcedureCard({ procedure }: { procedure: (typeof procedures)[number] }
 }
 
 
-function EmptyState() {
-  return (
-    <div className="empty-state">
-      <FileQuestion size={26} />
-      <div>
-        <strong>Empieza con el dato que tengas</strong>
-        <p>Si no sabes que ingresar, abre el asistente y elige “No sé dónde empezar”.</p>
-      </div>
-    </div>
-  );
-}
-
-function Channel({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="channel-row">
-      <span>{label}</span>
-      <strong>{value}</strong>
-    </div>
-  );
-}
-
 function iconFor(icon: string) {
   const icons = {
     badge: <BadgeCheck size={22} />,
@@ -1205,7 +1017,6 @@ const STEP_LABELS = ["Inicio", "Consulta", "Resultados", "Pago / Trámite"];
 
 function HeroInfoPanel({
   activeTab,
-  searched,
   step,
   result,
   noResult,
@@ -1382,7 +1193,7 @@ function HeroInfoPanel({
               </button>
             </div>
             <p className="pay-sim-disclaimer">
-              ⚠️ Simulación demo. Ningún cargo real será realizado.
+              <AlertTriangle size={14} aria-hidden="true" /> Simulación demo. Ningún cargo real será realizado.
             </p>
           </form>
         ) : payState === "processing" ? (
@@ -1408,7 +1219,7 @@ function HeroInfoPanel({
               <div className="receipt-row"><span>Titular</span><strong>{result?.owner}</strong></div>
               <div className="receipt-row"><span>Monto pagado</span><strong>S/ {amount.toFixed(2)}</strong></div>
               <div className="receipt-row"><span>N.° operación</span><strong>{opNum}</strong></div>
-              <div className="receipt-row"><span>Estado</span><strong className="receipt-ok">✔ Cancelado</strong></div>
+              <div className="receipt-row"><span>Estado</span><strong className="receipt-ok"><Check size={14} aria-hidden="true" /> Cancelado</strong></div>
               <div className="receipt-footer">Simulación demo — SAT Lima Hackathon</div>
             </div>
             <button className="receipt-dl-btn" type="button" onClick={handlePrintReceipt}>
@@ -1502,166 +1313,7 @@ function HeroInfoPanel({
 // INLINE RESULT CARD — usado en /consultar-pagar
 // ──────────────────────────────────────────────────────────────────
 
-function InlineResultCard({ data, step }: { data: MockResultData; step?: number }) {
-  const amount = data.multa ?? data.monto ?? 0;
-  const [payState, setPayState] = useState<"idle" | "form" | "processing" | "success">("idle");
-  const [cardNum, setCardNum] = useState("");
-  const [cvv, setCvv] = useState("");
-  const [opNum] = useState(() => `OP-SAT-${Date.now().toString().slice(-8)}`);
-  const statusClass =
-    data.estado === "Sin deuda" || data.estado === "Pagado"
-      ? "hip-badge-ok"
-      : data.estado === "En coactivo"
-      ? "hip-badge-danger"
-      : "hip-badge-warn";
-
-  const handleConfirmarPago = (e: React.FormEvent) => {
-    e.preventDefault();
-    setPayState("processing");
-    setTimeout(() => setPayState("success"), 2200);
-  };
-
-  const handlePrintReceipt = () => {
-    const now = new Date();
-    const fecha = now.toLocaleDateString("es-PE", { day: "2-digit", month: "long", year: "numeric" });
-    const hora  = now.toLocaleTimeString("es-PE", { hour: "2-digit", minute: "2-digit" });
-    const html = buildReceiptHTML({
-      owner: data.owner,
-      amount,
-      opNum,
-      detail: data.tributo ?? data.clase ?? "Papeleta / Tributo",
-      fecha,
-      hora,
-    });
-    const win = window.open("", "_blank", "width=520,height=780");
-    if (win) {
-      win.document.write(html);
-      win.document.close();
-      win.focus();
-      setTimeout(() => win.print(), 600);
-    }
-  };
-
-  if (payState === "form") {
-    return (
-      <form className="inline-result-card pay-sim-form" onSubmit={handleConfirmarPago}>
-        <div className="pay-sim-card-preview" aria-hidden="true">
-          <div className="pay-sim-card">
-            <div className="pay-sim-chip" />
-            <span className="pay-sim-card-num">
-              {cardNum.replace(/\D/g, "").padEnd(16, "•").replace(/(.{4})/g, "$1 ").trim() || "•••• •••• •••• ••••"}
-            </span>
-            <div className="pay-sim-card-meta"><span>SAT LIMA</span><span>12/27</span></div>
-          </div>
-        </div>
-        <div className="pay-sim-amount-row"><span>Total</span><strong>S/ {amount.toFixed(2)}</strong></div>
-        <label className="pay-sim-label" htmlFor="ic-card">Número de tarjeta</label>
-        <input id="ic-card" className="pay-sim-input" type="text" inputMode="numeric" maxLength={19}
-          placeholder="4557 1234 8890 0021" value={cardNum}
-          onChange={(e) => { const r = e.target.value.replace(/\D/g, "").slice(0, 16); setCardNum(r.replace(/(.{4})/g, "$1 ").trim()); }} required />
-        <label className="pay-sim-label" htmlFor="ic-cvv">CVV</label>
-        <input id="ic-cvv" className="pay-sim-input pay-sim-cvv" type="text" inputMode="numeric"
-          maxLength={3} placeholder="742" value={cvv}
-          onChange={(e) => setCvv(e.target.value.replace(/\D/g, "").slice(0, 3))} required />
-        <div className="pay-sim-actions">
-          <button type="submit" className="primary-action full"><CreditCard size={16} /> Pagar S/ {amount.toFixed(2)}</button>
-          <button type="button" className="secondary-action full" onClick={() => setPayState("idle")}>Cancelar</button>
-        </div>
-        <p className="pay-sim-disclaimer">⚠️ Simulación demo. Ningún cargo real.</p>
-      </form>
-    );
-  }
-
-  if (payState === "processing") {
-    return (
-      <div className="inline-result-card pay-sim-processing">
-        <div className="hip-loading-ring"><div className="hip-spinner" /><CreditCard size={24} className="hip-spinner-icon" /></div>
-        <div className="pay-sim-process-steps">
-          <span className="ps-step ps-done"><CheckCircle2 size={13} /> Validando tarjeta</span>
-          <span className="ps-step ps-active"><div className="ps-dot" /> Autorizando pago...</span>
-          <span className="ps-step ps-future">&bull; Generando comprobante</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (payState === "success") {
-    return (
-      <div className="inline-result-card pay-sim-success">
-        <div className="pay-sim-success-icon"><CheckCircle2 size={32} /></div>
-        <strong>¡Pago confirmado!</strong>
-        <div className="pay-sim-receipt">
-          <div className="receipt-header">Comprobante SAT Lima</div>
-          <div className="receipt-row"><span>Titular</span><strong>{data.owner}</strong></div>
-          <div className="receipt-row"><span>Monto pagado</span><strong>S/ {amount.toFixed(2)}</strong></div>
-          <div className="receipt-row"><span>N.° operación</span><strong>{opNum}</strong></div>
-          <div className="receipt-row"><span>Estado</span><strong className="receipt-ok">✔ Cancelado</strong></div>
-          <div className="receipt-footer">Simulación demo — SAT Lima Hackathon</div>
-        </div>
-        <button className="receipt-dl-btn" type="button" onClick={handlePrintReceipt}>
-          <FileText size={15} /> Descargar comprobante PDF
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="inline-result-card" role="status" aria-live="polite">
-      <div className="hip-result-owner">
-        <span className="hip-avatar">{data.owner.charAt(0)}</span>
-        <div>
-          <strong>{data.owner}</strong>
-          <span className={`hip-badge ${statusClass}`}>{data.estado ?? "Activo"}</span>
-        </div>
-      </div>
-      {data.tributo && (<div className="hip-result-row"><span>Tributo</span><strong>{data.tributo}</strong></div>)}
-      {data.clase && data.clase !== "N/A" && (<div className="hip-result-row"><span>Clase</span><strong>{data.clase}</strong></div>)}
-      {data.detalle && (
-        <div className="hip-result-row" style={{ flexDirection: "column", gap: "0.2rem" } as React.CSSProperties}>
-          <span>Detalle</span>
-          <p style={{ fontSize: "0.82rem", color: "var(--color-text)" }}>{data.detalle}</p>
-        </div>
-      )}
-      <div className="hip-result-amount">
-        <span>Total</span>
-        <strong className={amount === 0 ? "hip-amount-zero" : "hip-amount-due"}>
-          {amount === 0 ? "Sin deuda" : `S/ ${amount.toFixed(2)}`}
-        </strong>
-      </div>
-      {amount > 0 && (
-        <button className="primary-action full" type="button" onClick={() => setPayState("form")}>
-          <CreditCard size={16} /> Pagar ahora (demo)
-        </button>
-      )}
-    </div>
-  );
-}
-
-function NoResultCard() {
-  return (
-    <div className="no-result-card" role="status" aria-live="polite">
-      <div className="no-result-icon" aria-hidden="true">
-        <CheckCircle2 size={32} />
-      </div>
-      <div>
-        <strong>¡Sin deudas ni multas pendientes!</strong>
-        <p>
-          No se encontraron papeletas, tributos ni expedientes asociados
-          a los datos que ingresaste. Estás al día con el SAT Lima.
-        </p>
-        <p className="no-result-note">
-          Si crees que hay un error o tienes una notificación física,
-          visita una sede o usa el asistente SAT.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-// ──────────────────────────────────────────────────────────────────
-// buildReceiptHTML — genera el HTML del ticket PDF
-// ──────────────────────────────────────────────────────────────────
-
+// buildReceiptHTML: genera el HTML del comprobante para window.print (Bloque 0).
 function buildReceiptHTML(p: {
   owner: string;
   amount: number;
@@ -1910,7 +1562,7 @@ function buildReceiptHTML(p: {
       </div>
       <div class="row">
         <span class="label">Estado</span>
-        <span class="value"><span class="badge-ok">✔ CANCELADO</span></span>
+        <span class="value"><span class="badge-ok">CANCELADO</span></span>
       </div>
     </div>
 
