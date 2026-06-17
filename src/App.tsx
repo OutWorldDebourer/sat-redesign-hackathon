@@ -8,7 +8,7 @@ import { Link, NavLink, Route, Routes, useLocation } from "react-router-dom";
 import { Assistant, type AssistantCommand } from "./components/assistant/Assistant";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { externalLinks } from "./data/homeData";
-import { navItems } from "./data/satData";
+import { footerNav, primaryNav } from "./data/satData";
 
 const Home = lazy(() => import("./pages/Home"));
 const ConsultPay = lazy(() => import("./pages/ConsultPay"));
@@ -49,7 +49,7 @@ function App() {
           </Link>
 
           <nav className="desktop-nav" aria-label="Navegacion principal">
-            {navItems.slice(0, 6).map((item) => (
+            {primaryNav.map((item) => (
               <NavLink key={item.path} to={item.path}>
                 {item.label}
               </NavLink>
@@ -81,7 +81,7 @@ function App() {
 
         {mobileMenuOpen ? (
           <nav className="mobile-nav" aria-label="Menu movil">
-            {navItems.map((item) => (
+            {[...primaryNav, ...footerNav].map((item) => (
               <NavLink key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)}>
                 {item.label}
                 <ChevronRight size={16} />
@@ -105,6 +105,44 @@ function App() {
             </Routes>
           </Suspense>
         </main>
+
+        <footer className="site-footer">
+          <nav className="footer-nav" aria-label="Enlaces institucionales y oficiales">
+            {footerNav.map((item) => (
+              <NavLink key={item.path} to={item.path}>
+                {item.label}
+              </NavLink>
+            ))}
+            <a
+              href={externalLinks.agenciaVirtual}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Agencia Virtual (abre en una pestaña nueva)"
+            >
+              Agencia Virtual
+            </a>
+            <a
+              href={externalLinks.mesaPartes}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Mesa de Partes (abre en una pestaña nueva)"
+            >
+              Mesa de Partes
+            </a>
+            <a
+              href={externalLinks.citas}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Citas (abre en una pestaña nueva)"
+            >
+              Citas
+            </a>
+          </nav>
+          <p className="footer-note">
+            Prototipo ciudadano. Los tramites del SAT son gratis: solo <strong>sat.gob.pe</strong> y{" "}
+            <strong>app.sat.gob.pe</strong>.
+          </p>
+        </footer>
       </div>
 
       <Assistant pagePath={location.pathname} command={assistantCommand} />

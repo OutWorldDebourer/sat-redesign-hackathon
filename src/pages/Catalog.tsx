@@ -4,6 +4,7 @@
 import { PageFrame } from "../components/PageFrame";
 import { ServiceCard } from "../components/ServiceCard";
 import { CalendarVencimientos } from "../features/CalendarVencimientos";
+import { MateriaClarification } from "../features/MateriaClarification";
 import { PapeletaSemaforo } from "../features/PapeletaSemaforo";
 import { serviceItems } from "../data/satData";
 
@@ -27,6 +28,7 @@ export default function Catalog({ kind }: { kind: "tributos" | "papeletas" }) {
           : "Papeletas y multas administrativas separadas para evitar confusion entre deuda tributaria y sanciones."
       }
     >
+      <MateriaClarification materia={kind} />
       <div className="service-grid">
         {items.map((item) => (
           <ServiceCard key={item.id} item={item} />

@@ -9,6 +9,7 @@ Strategy components (citizen domain) for the SAT redesign. Self-contained: each 
 - `VerificadorAntiSuplantacion.tsx` — Checks if an email/URL/number is an official SAT channel; flags known fraud. Exports: `VerificadorAntiSuplantacion`.
 - `SedeFinder.tsx` — Filters offices by district and service. Exports: `SedeFinder`.
 - `CalendarVencimientos.tsx` — Versioned due-dates with business-days countdown and demo reminder. Exports: `CalendarVencimientos`.
+- `MateriaClarification.tsx` — "Step 0" disambiguation per materia (predial Cercado, alcabala al SAT, papeleta vs multa) using accessible `<details>`. Props: `materia` (`"tributos"`/`"papeletas"`). Exports: `MateriaClarification`.
 
 ## Related
 

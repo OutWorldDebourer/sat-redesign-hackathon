@@ -17,6 +17,8 @@ export type FiscalYear = {
   descuentoPapeletaPct: number;
   /** Alcabala: tramo inafecto en UIT y tasa sobre el exceso. */
   alcabala: { tramoInafectoUIT: number; tasaPct: number };
+  /** Impuesto vehicular: tasa anual y anios afectos. */
+  vehicular: { tasaPct: number; anios: number };
   /** Beneficio pensionista/adulto mayor: tope de base imponible deducible en UIT. */
   beneficio50UIT: { topeUIT: number };
 };
@@ -51,6 +53,7 @@ export const FISCAL_2026: FiscalYear = {
   ],
   descuentoPapeletaPct: 83,
   alcabala: { tramoInafectoUIT: 10, tasaPct: 3 },
+  vehicular: { tasaPct: 1, anios: 3 },
   beneficio50UIT: { topeUIT: 50 },
 };
 

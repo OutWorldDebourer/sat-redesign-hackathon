@@ -4,7 +4,7 @@ Datos tipados y mock en memoria que alimentan la UI del prototipo SAT. Sin I/O d
 
 ## Files
 
-- `satData.ts` — Catálogo grounded de servicios SAT (fuentes oficiales, navegación, trámites, sedes, FAQs, intents). Exports: `officialSources`, `sourceLinks`, `navItems`, `paymentTabs`, `quickActions`, `quickAccessItems`, `services`, `serviceItems`, `procedures`, `officeLocations`, `faqs`, `assistantIntents`, `satData`.
+- `satData.ts` — Catálogo grounded de servicios SAT (fuentes oficiales, navegación, trámites, sedes, FAQs, intents). Exports: `officialSources`, `sourceLinks`, `navItems`, `primaryNav`, `footerNav`, `paymentTabs`, `quickActions`, `quickAccessItems`, `services`, `serviceItems`, `procedures`, `officeLocations`, `faqs`, `assistantIntents`, `satData`.
 - `mockApi.ts` — Consulta simulada en memoria por placa/DNI/expediente. Exports: `consultarSAT`, `MockResultData`, `MockApiResponse`.
 - `homeData.ts` — Datos de presentación del home y enlaces externos. Exports: `externalLinks`, `routeLanes`, `heroAccessItems`, `urbanIndicators`, `benefitItems`.
 - `tabSteps.tsx` — Guion visual del HeroInfoPanel: pasos y mockups por tipo de consulta. Exports: `TAB_STEPS`, `STEP_LABELS`, `TabStep`.

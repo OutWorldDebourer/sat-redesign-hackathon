@@ -265,6 +265,59 @@ export const navItems: NavigationItem[] = [
   },
 ];
 
+// Navegacion primaria por intencion (Bloque 6). Seis destinos distintos que
+// reusan las rutas existentes (sin romper deep links ni sitemap). "Inicio" vive
+// en el logo; "Institucion" pasa al pie (footerNav) para no ocultar items en
+// escritorio (antes el nav hacia slice(0,6)).
+export const primaryNav: NavigationItem[] = [
+  {
+    id: "consultar-pagar",
+    label: "Consultar y pagar",
+    path: "/consultar-pagar",
+    description: "Consulta deuda por placa, DNI/RUC o codigo y continua al pago.",
+  },
+  {
+    id: "tributos",
+    label: "Tributos",
+    path: "/tributos",
+    description: "Predial, arbitrios, vehicular y alcabala.",
+  },
+  {
+    id: "papeletas",
+    label: "Papeletas",
+    path: "/papeletas-multas",
+    description: "Papeletas de transito y multas administrativas.",
+  },
+  {
+    id: "tramites",
+    label: "Tramites",
+    path: "/tramites-digitales",
+    description: "Declarar, reclamar y seguir expedientes en Mesa de Partes.",
+  },
+  {
+    id: "fraccionar",
+    label: "Fraccionar",
+    path: "/fraccionamiento",
+    description: "Facilidades de pago para deuda tributaria y no tributaria.",
+  },
+  {
+    id: "ayuda",
+    label: "Sedes y ayuda",
+    path: "/atencion-sedes",
+    description: "Canales, sedes, citas y seguridad.",
+  },
+];
+
+// Navegacion secundaria (pie de pagina).
+export const footerNav: NavigationItem[] = [
+  {
+    id: "institucion",
+    label: "Institucion",
+    path: "/institucion",
+    description: "Informacion institucional, transparencia y datos abiertos.",
+  },
+];
+
 export const paymentTabs: PaymentTab[] = [
   {
     id: "placa",
