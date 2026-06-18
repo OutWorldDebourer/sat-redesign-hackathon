@@ -2695,6 +2695,18 @@
   margin-bottom: 0.1rem;
 }
 
+/* Nota de resultado sintetico (demo de exposicion): chip sutil, no un estado. */
+.hip-demo-tag {
+  align-self: flex-start;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-accent) 14%, var(--surface-base));
+  color: color-mix(in oklch, var(--color-accent) 76%, var(--color-text-strong));
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
 .hip-avatar {
   display: grid;
   place-items: center;

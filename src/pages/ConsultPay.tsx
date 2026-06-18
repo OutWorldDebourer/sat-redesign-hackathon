@@ -14,10 +14,12 @@ export default function ConsultPay() {
   const [searched, setSearched] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
-  const handleSearch = (query: string) => {
+  const handleSearch = (query: string, kind?: string) => {
     setStep(2);
     setSearched(true);
-    const response = satApi.consultar(query);
+    // Demo de exposición: acepta cualquier documento. Datos reales si existen,
+    // si no un resultado sintético para mantener visible el flujo de consulta.
+    const response = satApi.consultarDemo(query, kind ?? activeTab);
     if (response.status === "success") {
       setSearchResult(response.data);
       setStep(3);

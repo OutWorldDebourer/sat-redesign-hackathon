@@ -39,3 +39,31 @@ describe("getConstraints", () => {
     expect(getConstraints("dni-ruc").inputMode).toBe("numeric");
   });
 });
+
+describe("modo demo (exposicion)", () => {
+  it("acepta cualquier texto no vacio en cualquier pestaña", () => {
+    expect(validateQuery("placa", "DEMO-EXPO-123", { demo: true }).valid).toBe(true);
+    expect(validateQuery("dni-ruc", "documento inventado", { demo: true }).valid).toBe(true);
+    expect(validateQuery("codigo", "ABC", { demo: true }).valid).toBe(true);
+    expect(validateQuery("expediente", "123", { demo: true }).valid).toBe(true);
+  });
+
+  it("sigue bloqueando vacio o solo espacios en modo demo", () => {
+    expect(validateQuery("placa", "", { demo: true }).valid).toBe(false);
+    expect(validateQuery("placa", "   ", { demo: true }).valid).toBe(false);
+  });
+
+  it("conserva la validacion estricta cuando NO es demo", () => {
+    expect(validateQuery("placa", "AB-12").valid).toBe(false);
+    expect(validateQuery("placa", "DEMO-EXPO-123").valid).toBe(false);
+  });
+
+  it("el saneo demo preserva el texto sin imponer formato de pestaña", () => {
+    expect(sanitizeQuery("dni-ruc", "DEMO-EXPO-123", { demo: true })).toBe("DEMO-EXPO-123");
+    expect(sanitizeQuery("placa", "DEMO-EXPO-123", { demo: true })).toBe("DEMO-EXPO-123");
+  });
+
+  it("el campo demo usa teclado de texto en todas las pestañas", () => {
+    expect(getConstraints("dni-ruc", { demo: true }).inputMode).toBe("text");
+  });
+});

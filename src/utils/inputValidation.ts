@@ -1,6 +1,10 @@
 // Validación y saneo de los datos de consulta del SAT (placa, DNI/RUC, código,
 // expediente). Funciones puras, sin estado ni I/O: testeable y reutilizable
 // desde cualquier formulario de entrada.
+//
+// Modo demo (`opts.demo`): para la exposición, la pantalla principal acepta
+// CUALQUIER documento/código/texto no vacío sin imponer el formato por pestaña.
+// Sin `opts.demo` el comportamiento es el estricto de siempre (lógica real).
 
 export type QueryKind = "placa" | "dni-ruc" | "codigo" | "expediente";
 
@@ -19,8 +23,16 @@ export interface ValidationResult {
   message?: string;
 }
 
+/** Opciones de validación. `demo: true` afloja el formato para la exposición. */
+export interface ValidationOptions {
+  demo?: boolean;
+}
+
 export const DNI_LENGTH = 8;
 export const RUC_LENGTH = 11;
+
+/** Longitud máxima en modo demo (acepta cualquier identificador razonable). */
+const DEMO_MAX_LENGTH = 32;
 
 const KINDS: readonly QueryKind[] = ["placa", "dni-ruc", "codigo", "expediente"];
 
@@ -32,9 +44,14 @@ const PLACA_PATTERN = /^[A-Z]{3}-\d{3}$/;
 
 /**
  * Normaliza el valor mientras el usuario escribe: filtra caracteres no
- * permitidos y aplica un formato suave (mayúsculas, guion de placa).
+ * permitidos y aplica un formato suave (mayúsculas, guion de placa). En modo
+ * demo conserva letras, números, espacios y guiones sin forzar el formato de la
+ * pestaña, para no mutilar documentos inventados durante la exposición.
  */
-export function sanitizeQuery(kind: string, raw: string): string {
+export function sanitizeQuery(kind: string, raw: string, opts?: ValidationOptions): string {
+  if (opts?.demo) {
+    return raw.replace(/[^\p{L}\p{N} -]/gu, "").slice(0, DEMO_MAX_LENGTH);
+  }
   if (!isKind(kind)) return raw;
   switch (kind) {
     case "dni-ruc":
@@ -48,10 +65,14 @@ export function sanitizeQuery(kind: string, raw: string): string {
   }
 }
 
-/** Valida el valor saneado en el momento de la consulta. */
-export function validateQuery(kind: string, value: string): ValidationResult {
+/**
+ * Valida el valor saneado en el momento de la consulta. En modo demo solo exige
+ * que no esté vacío (cualquier documento/código/texto sirve para ver el flujo).
+ */
+export function validateQuery(kind: string, value: string, opts?: ValidationOptions): ValidationResult {
   const v = value.trim();
   if (!v) return { valid: false, message: "Ingresa un dato para consultar." };
+  if (opts?.demo) return { valid: true };
   if (!isKind(kind)) return { valid: true };
 
   switch (kind) {
@@ -83,8 +104,15 @@ export function validateQuery(kind: string, value: string): ValidationResult {
   }
 }
 
-/** Restricciones de campo (teclado, longitud, capitalización) por tipo. */
-export function getConstraints(kind: string): QueryConstraints {
+/**
+ * Restricciones de campo (teclado, longitud, capitalización) por tipo. En modo
+ * demo usa un campo de texto libre amplio para que cualquier documento se pueda
+ * escribir desde cualquier pestaña, incluido móvil.
+ */
+export function getConstraints(kind: string, opts?: ValidationOptions): QueryConstraints {
+  if (opts?.demo) {
+    return { inputMode: "text", maxLength: DEMO_MAX_LENGTH, autoCapitalize: "none" };
+  }
   switch (kind) {
     case "dni-ruc":
       return { inputMode: "numeric", maxLength: RUC_LENGTH, autoCapitalize: "none" };

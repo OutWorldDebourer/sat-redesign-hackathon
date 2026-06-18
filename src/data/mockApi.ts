@@ -14,6 +14,8 @@ export type MockResultData = {
   monto?: number;
   expediente?: string;
   detalle?: string;
+  /** Resultado sintético generado para la demo (dato no encontrado en la base). */
+  demo?: boolean;
 };
 
 export type MockApiResponse =
@@ -171,4 +173,81 @@ export function consultarSAT(query: string): MockApiResponse {
     message:
       "No se encontraron registros para ese dato. Prueba: ABC-123, ABC-250, 48592013, 08742193, CP-2026-018 o EXP-2024-001.",
   };
+}
+
+// ── Consulta demo (exposición) ────────────────────────────────────────────────
+// La pantalla principal debe mostrar el flujo con CUALQUIER documento. Esta
+// función reutiliza los datos conocidos y, si el valor no existe, sintetiza un
+// resultado demo-friendly determinista (mismo dato => mismo monto) para que la
+// exposición vea consulta recibida, estado, deuda y acciones.
+
+const KIND_TO_TIPO: Record<string, MockResultData["tipo"]> = {
+  placa: "placa",
+  "dni-ruc": "dni",
+  codigo: "codigo",
+  expediente: "expediente",
+};
+
+// Hash determinista (sin Math.random, que rompería la reproducibilidad de la demo).
+function demoSeed(value: string): number {
+  let h = 0;
+  for (let i = 0; i < value.length; i += 1) {
+    h = (h * 31 + value.charCodeAt(i)) >>> 0;
+  }
+  return h;
+}
+
+function buildDemoResult(query: string, kind?: string): MockResultData {
+  const tipo = (kind && KIND_TO_TIPO[kind]) || "codigo";
+  const label = query.trim().toUpperCase();
+  const seed = demoSeed(label);
+
+  if (tipo === "expediente") {
+    return {
+      owner: "Trámite de demostración",
+      tipo,
+      estado: "En proceso",
+      monto: 0,
+      detalle: `Consulta de demostración para '${label}'. Expediente sintético para la exposición.`,
+      demo: true,
+    };
+  }
+
+  // Monto orgánico y reproducible (S/ 150.00 – S/ 1,849.99).
+  const monto = Math.round((150 + (seed % 1700) + (seed % 100) / 100) * 100) / 100;
+
+  if (tipo === "placa") {
+    return {
+      owner: "Conductor de demostración",
+      tipo,
+      estado: "Pendiente",
+      clase: "Infracción demo",
+      multa: monto,
+      detalle: `Consulta de demostración para '${label}'. Papeleta sintética para la exposición.`,
+      demo: true,
+    };
+  }
+
+  return {
+    owner: "Contribuyente de demostración",
+    tipo,
+    estado: "Pendiente",
+    tributo: tipo === "dni" ? "Obligación tributaria demo" : "Deuda notificada demo",
+    monto,
+    detalle: `Consulta de demostración para '${label}'. Resultado sintético para la exposición.`,
+    demo: true,
+  };
+}
+
+/**
+ * Consulta demo-friendly para la pantalla principal: devuelve los datos reales
+ * si existen y, en caso contrario, un resultado sintético determinista. Un valor
+ * vacío sigue devolviendo error (no debe llegar: el formulario lo bloquea).
+ */
+export function consultarDemo(query: string, kind?: string): MockApiResponse {
+  const known = consultarSAT(query);
+  if (known.status === "success") return known;
+  if (!query.trim()) return known;
+  const data = buildDemoResult(query, kind);
+  return { status: "success", type: data.tipo, data };
 }

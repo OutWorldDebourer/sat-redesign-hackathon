@@ -151,6 +151,9 @@ export function HeroInfoPanel({
                 </span>
               </div>
             </div>
+            {result.demo && (
+              <p className="hip-demo-tag">Consulta de demostración · dato sintético para la exposición</p>
+            )}
             {result.tributo && (
               <div className="hip-result-row">
                 <span>Tributo</span>

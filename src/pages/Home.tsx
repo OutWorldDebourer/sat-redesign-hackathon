@@ -34,15 +34,17 @@ export default function Home({
   const [searchStep, setSearchStep] = useState<1 | 2 | 3 | 4>(1);
   const [searched, setSearched] = useState(false);
 
-  const handleSearch = (query: string) => {
+  const handleSearch = (query: string, kind?: string) => {
     setSearchStep(2);
     setSearched(true);
-    const response = satApi.consultar(query);
+    // Demo de exposición: acepta cualquier documento. Datos reales si existen,
+    // si no un resultado sintético para que el flujo siempre sea visible.
+    const response = satApi.consultarDemo(query, kind ?? activeTab);
     if (response.status === "success") {
       setSearchResult(response.data);
       setSearchStep(3);
     } else {
-      setSearchResult(null); // muestra la tarjeta amable "sin multas"
+      setSearchResult(null); // solo si el dato va vacío: tarjeta amable "sin multas"
       setSearchStep(3);
     }
   };

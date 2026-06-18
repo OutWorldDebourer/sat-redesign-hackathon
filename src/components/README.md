@@ -8,7 +8,7 @@ Reusable presentational UI for the SAT redesign. No domain or network logic; dat
 - `SectionHeading.tsx` — Eyebrow + title + copy heading block. Exports: `SectionHeading`.
 - `ServiceCard.tsx` — Service (tributo/multa) card with actions and source link. Exports: `ServiceCard`.
 - `ProcedureCard.tsx` — Procedure card linking to its detail route. Exports: `ProcedureCard`.
-- `UniversalActionBox.tsx` — Single-entry query form (placa/DNI/codigo/expediente) with sanitize + validate. Exports: `UniversalActionBox`.
+- `UniversalActionBox.tsx` — Single-entry query form (placa/DNI/codigo/expediente) with sanitize + validate. `demo` prop (default true) accepts any non-empty value and passes the active kind to `onSubmit`. Exports: `UniversalActionBox`.
 - `ThemeToggle.tsx` — Light/dark theme toggle (Moon/Sun, `aria-label`). Exports: `ThemeToggle`.
 
 ## Subdirectories

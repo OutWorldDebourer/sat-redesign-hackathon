@@ -3,7 +3,7 @@
 // el backend serverless (Bloque 4). Las paginas consumen `satApi`, nunca
 // `mockApi` directamente, para que el switch mock/real sea transparente.
 
-import { consultarSAT, type MockApiResponse, type MockResultData } from "../data/mockApi";
+import { consultarDemo, consultarSAT, type MockApiResponse, type MockResultData } from "../data/mockApi";
 
 export type { MockApiResponse, MockResultData };
 
@@ -20,5 +20,15 @@ export const satApi = {
    */
   consultar(query: string): MockApiResponse {
     return consultarSAT(query);
+  },
+
+  /**
+   * Consulta demo-friendly para la pantalla principal de la exposición: acepta
+   * cualquier documento (placa, DNI/RUC, código, expediente o texto inventado).
+   * Devuelve datos reales si existen y, si no, un resultado sintético determinista
+   * para que el flujo (consulta → estado → deuda → pago) sea siempre visible.
+   */
+  consultarDemo(query: string, kind?: string): MockApiResponse {
+    return consultarDemo(query, kind);
   },
 };

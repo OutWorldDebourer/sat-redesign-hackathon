@@ -1,7 +1,8 @@
 // Caja de accion universal: una sola entrada para consultar deuda, papeleta,
-// codigo o expediente. Sanea y valida el dato segun la pestaña activa antes de
-// delegar la consulta al contenedor. Si el campo va vacio, usa el ejemplo de la
-// pestaña para que la demo se pruebe con un clic.
+// codigo o expediente. Para la exposicion funciona en modo demo: acepta
+// cualquier documento/codigo/texto no vacio (sin imponer el formato de la
+// pestaña) y delega la consulta al contenedor con la pestaña activa. Si el campo
+// va vacio, usa el ejemplo de la pestaña para que la demo se pruebe con un clic.
 
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { AlertCircle, Search } from "lucide-react";
@@ -11,15 +12,18 @@ import { getConstraints, sanitizeQuery, validateQuery } from "../utils/inputVali
 export function UniversalActionBox({
   onSubmit,
   onTabChange,
+  demo = true,
 }: {
-  onSubmit?: (value: string) => void;
+  onSubmit?: (value: string, kind?: string) => void;
   onTabChange?: (tabId: string) => void;
+  /** Modo exposición: acepta cualquier dato no vacío. Activo por defecto. */
+  demo?: boolean;
 }) {
   const [tab, setTab] = useState(paymentTabs[0].id);
   const [value, setValue] = useState("");
   const [error, setError] = useState<string | null>(null);
   const active = paymentTabs.find((item) => item.id === tab) ?? paymentTabs[0];
-  const constraints = getConstraints(tab);
+  const constraints = getConstraints(tab, { demo });
 
   const switchTab = (id: string) => {
     setTab(id);
@@ -29,21 +33,22 @@ export function UniversalActionBox({
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setValue(sanitizeQuery(tab, event.target.value));
+    setValue(sanitizeQuery(tab, event.target.value, { demo }));
     if (error) setError(null);
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // El placeholder permite probar la demo con un solo clic.
-    const candidate = value.trim() || active.example;
-    const result = validateQuery(tab, candidate);
+    // Campo vacío (sin escribir): usa el ejemplo para probar la demo con un clic.
+    // Si el usuario escribió solo espacios, se le pide un dato (no usa el ejemplo).
+    const candidate = value.length === 0 ? active.example : value.trim();
+    const result = validateQuery(tab, candidate, { demo });
     if (!result.valid) {
       setError(result.message ?? "Revisa el dato ingresado.");
       return;
     }
     setError(null);
-    onSubmit?.(candidate);
+    onSubmit?.(candidate, tab);
   };
 
   const errorId = "universal-query-error";
