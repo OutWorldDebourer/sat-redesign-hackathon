@@ -6,6 +6,7 @@
 // IP y errores degradados con gracia (el cliente cae a respuestas canned).
 
 import { buildSystemMessages, type ChatApiMessage } from "../src/data/chatConfig";
+import { scrubLine, scrubReasoningChunk } from "../src/services/sseScrub";
 
 export const config = { runtime: "edge" };
 
@@ -193,15 +194,28 @@ export default async function handler(req: Request): Promise<Response> {
       () => controller.abort(),
       STREAM_IDLE_TIMEOUT_MS,
     );
+    // Saneo de privacidad: elimina `reasoning_content` (razonamiento interno del
+    // modelo) del SSE antes de reenviarlo. El cuerpo RAW que llega al cliente
+    // solo contiene `content` y `[DONE]`; el razonamiento jamas viaja por la red.
+    // Se procesa por lineas conservando la linea parcial entre chunks.
+    const decoder = new TextDecoder();
+    const encoder = new TextEncoder();
+    let sseBuffer = "";
     const stream = upstream.body.pipeThrough(
-      new TransformStream({
+      new TransformStream<Uint8Array, Uint8Array>({
         transform(chunk, ctrl) {
           clearTimeout(idleTimer);
           idleTimer = setTimeout(() => controller.abort(), STREAM_IDLE_TIMEOUT_MS);
-          ctrl.enqueue(chunk);
+          sseBuffer += decoder.decode(chunk, { stream: true });
+          const { output, remainder } = scrubReasoningChunk(sseBuffer);
+          sseBuffer = remainder;
+          if (output) ctrl.enqueue(encoder.encode(output));
         },
-        flush() {
+        flush(ctrl) {
           clearTimeout(idleTimer);
+          const tail = sseBuffer + decoder.decode();
+          if (tail) ctrl.enqueue(encoder.encode(scrubLine(tail)));
+          sseBuffer = "";
         },
       }),
     );
