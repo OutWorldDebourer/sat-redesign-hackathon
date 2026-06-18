@@ -27,7 +27,7 @@ npm run build       # tsc --noEmit && vite build
 - CSS plano modular en capas (`src/styles/`), 100% OKLCH con tema claro/oscuro
 - Funcion serverless Edge en Vercel (`api/chat.ts`) para el chat IA
 
-## Chat IA (DeepSeek) — variables de entorno y blocker externo
+## Chat IA (DeepSeek) — variables de entorno y estado
 
 El chat fijo funciona en dos modos:
 
