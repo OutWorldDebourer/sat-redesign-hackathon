@@ -5,6 +5,9 @@
 .app-shell {
   display: grid;
   grid-template-columns: minmax(0, 1fr) clamp(320px, 22vw, 360px);
+  /* min-height (no height): el track del grid crece con el contenido, dandole
+     recorrido al position:sticky del asistente. Con height:100svh el track
+     quedaba fijo a una pantalla y el panel del chat se iba con el scroll. */
   min-height: 100vh;
 }
 

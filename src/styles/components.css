@@ -1180,10 +1180,11 @@
 .assistant-region {
   position: sticky;
   top: 0;
-  /* Sin align-self el item de grid se estira a toda la fila y el sticky no
-     puede desplazarse: el panel se ve "pegado". align-self:start lo deja tomar
-     su propia altura y comportarse como sticky real. */
-  align-self: start;
+  /* stretch + height/max-height:100svh: el item queda fijo en 100svh (max-height
+     lo limita, no se estira mas alla) y anclado al inicio de su track. El track
+     crece con el contenido (.app-shell usa min-height, no height), asi que el
+     position:sticky tiene recorrido y el panel se mantiene visible al scrollear. */
+  align-self: stretch;
   z-index: 30;
   display: grid;
   height: 100vh; /* fallback para navegadores sin svh */
