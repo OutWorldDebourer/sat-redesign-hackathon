@@ -61,6 +61,14 @@ export default function AssistantDashboard() {
     return () => window.removeEventListener("storage", sync);
   }, []);
 
+  // El borrador de respuesta es estado de UI por-caso: al cambiar de ticket se
+  // limpia para no arrastrar el texto (responder/nota de cierre) de un caso a
+  // otro. Sin esto, cerrar un caso con nota dejaba el texto y se escribia como
+  // resolutionNote del siguiente ticket cerrado.
+  useEffect(() => {
+    setResponseDraft("");
+  }, [selectedId]);
+
   const filtered = useMemo(
     () =>
       tickets.filter(
