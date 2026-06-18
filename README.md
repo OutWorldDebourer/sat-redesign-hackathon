@@ -31,8 +31,8 @@ npm run build       # tsc --noEmit && vite build
 
 El chat fijo funciona en dos modos:
 
-- **Fallback canned (por defecto):** sin configurar la clave, el chat responde con orientacion guiada local (sin LLM) y el endpoint `POST /api/chat` devuelve `503 { "error": "chat_unavailable", "reason": "missing_api_key" }`. La app sigue 100% usable y el chat permanece visible/funcional.
-- **Chat IA real (DeepSeek):** requiere provisionar credenciales en el entorno del servidor.
+- **Fallback canned (degradacion suave):** si la clave no esta provisionada, `POST /api/chat` responde `200` con un envelope JSON `{ "error": "chat_unavailable", "reason": "missing_api_key" }` (no un `5xx`, para no ensuciar la consola del navegador). El cliente detecta el envelope por `content-type` y degrada a orientacion guiada local (sin LLM). La app sigue 100% usable y el chat permanece visible/funcional.
+- **Chat IA real (DeepSeek) — activo en produccion:** con `DEEPSEEK_API_KEY` en el entorno del servidor, `/api/chat` hace streaming real (modos normal y pensar).
 
 ### Variables de entorno
 
@@ -46,7 +46,7 @@ El chat fijo funciona en dos modos:
 | `DEEPSEEK_MODEL` | No | `deepseek-v4-flash` | Fallback legacy si no se definen FAST/THINK. |
 | `DEEPSEEK_BASE_URL` | No | `https://api.deepseek.com` | Base URL del proveedor (se exige `https://`). |
 
-> **Modo pensar:** el chat envía `mode: "normal" | "think"` a `/api/chat`. En `think` usa `DEEPSEEK_MODEL_THINK` con `reasoning_effort: "high"` (consultas complejas se auto-escalan); en `normal`, `DEEPSEEK_MODEL_FAST` con `reasoning_effort: "low"`. El razonamiento interno no se muestra al usuario. La base de conocimiento del chat se compila desde `src/data/satData.ts` (ver `src/data/satKnowledgeBase.ts`).
+> **Modo pensar:** el chat envía `mode: "normal" | "think"` a `/api/chat`. En `think` usa `DEEPSEEK_MODEL_THINK` con `reasoning_effort: "high"` (consultas complejas se auto-escalan); en `normal`, `DEEPSEEK_MODEL_FAST` con `reasoning_effort: "low"`. El razonamiento interno (`reasoning_content`) no se muestra al usuario y, además, se **filtra server-side** del stream SSE en `api/chat.ts` (ver `src/services/sseScrub.ts`): el cuerpo RAW que llega al cliente solo contiene `content` y `[DONE]`, nunca el razonamiento del modelo. La base de conocimiento del chat se compila desde `src/data/satData.ts` (ver `src/data/satKnowledgeBase.ts`).
 
 **Cliente** (prefijo `VITE_`, ver `.env.example`):
 
@@ -64,7 +64,7 @@ El chat fijo funciona en dos modos:
 2. Redeploy: `vercel --prod` (o un push a la rama conectada). No requiere `VITE_CHAT_ENABLED`: el cliente ya intenta el backend por defecto.
 3. Verificar: `POST /api/chat` ya no devuelve `missing_api_key` y el chat responde en streaming (normal o modo pensar).
 
-**Blocker actual:** mientras `DEEPSEEK_API_KEY` no este provisionada, el chat IA real queda inhabilitado y opera en fallback canned seguro. Es la unica dependencia externa pendiente del proyecto.
+**Estado actual:** `DEEPSEEK_API_KEY` ya está provisionada en el entorno de producción (Vercel), por lo que el chat IA real con DeepSeek está **activo** (modos normal y pensar, con `reasoning_content` filtrado server-side). Si la clave se retira o falta en otro entorno, el chat degrada automáticamente al fallback canned seguro (envelope `200 missing_api_key`, sin ruido de consola) sin romper la app.
 
 ## Documentacion
 
