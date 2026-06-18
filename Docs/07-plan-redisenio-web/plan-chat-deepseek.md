@@ -75,7 +75,7 @@ VITE_API_MODE=mock
 Contrato del handler:
 
 - Metodo: `POST /api/chat`. Body: `{ messages: ChatMessage[] }` (reutiliza tipo `ChatMessage` de `src/types.ts`).
-- Lee `process.env.DEEPSEEK_API_KEY`, `DEEPSEEK_BASE_URL`, `DEEPSEEK_MODEL`. Si falta la clave: responde `503` con mensaje de fallback (no 500 silencioso).
+- Lee `process.env.DEEPSEEK_API_KEY`, `DEEPSEEK_BASE_URL`, `DEEPSEEK_MODEL`. Si falta la clave: responde con mensaje de fallback (no 500 silencioso). _Actualizado Fase 9: el fallback es un envelope `200 { error: "chat_unavailable", reason: "missing_api_key" }` (no un `503`), para que el navegador no registre ruido de consola; el cliente lo detecta por `content-type` y degrada a canned._
 - SDK OpenAI-compatible apuntando a `base_url` DeepSeek (ver [../04-chat-ia/deepseek-api-plan.md](../04-chat-ia/deepseek-api-plan.md)).
 - Streaming SSE hacia el cliente (`text/event-stream`).
 - Inyecta system prompt + tools desde `src/data/chatConfig.ts` (Paso 5).
@@ -95,7 +95,7 @@ export const config = { runtime: "nodejs" };
 export default async function handler(req: Request): Promise<Response> {
   if (req.method !== "POST") return new Response("Method Not Allowed", { status: 405 });
   const key = process.env.DEEPSEEK_API_KEY;
-  if (!key) return fallbackResponse("chat-disabled"); // 503 + enlaces oficiales
+  if (!key) return fallbackResponse("chat-disabled"); // Fase 9: envelope 200 missing_api_key + enlaces oficiales
 
   const { messages } = await req.json();
   const safe = messages.map(anonymizePII); // PII fuera antes de salir a China
@@ -160,7 +160,7 @@ export default async function handler(req: Request): Promise<Response> {
 - UI: truncar PII en display; boton "Eliminar conversacion" siempre visible (limpia las claves `sat-assistant:*` de `localStorage`).
 - Escalamiento humano automatico ante keywords `coactiva`/`captura`/`embargo`: bypass del LLM, mostrar contacto/Mesa de Partes.
 - Banner anti-suplantacion: "El SAT solo usa @sat.gob.pe; los tramites son gratis; no pagues a tramitadores."
-- Fallback: si el endpoint responde `503`/error o `VITE_CHAT_ENABLED=false`, conservar `buildIntentResponse()` canned como degradacion graciosa (no romper el chat).
+- Fallback: si el endpoint no entrega un stream válido (envelope `200 missing_api_key` —Actualizado Fase 9, antes `503`—, error, o `VITE_CHAT_ENABLED=false`), conservar `buildIntentResponse()` canned como degradacion graciosa (no romper el chat).
 - Detalle normativo: [../04-chat-ia/seguridad-privacidad-y-limites.md](../04-chat-ia/seguridad-privacidad-y-limites.md).
 
 **Archivo objetivo**: `src/services/piiGuard.ts` (nuevo), `src/types.ts` (campo `containsPII`).
