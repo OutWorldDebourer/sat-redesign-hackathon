@@ -1,6 +1,6 @@
 # src/styles
 
-Global CSS split into cascade layers. Imported from `src/main.tsx` in the order below; that order IS the cascade order. Palette is 100% OKLCH via `light-dark()` tokens; dark mode is driven by `color-scheme` (system + `data-theme` override).
+Global CSS split into cascade layers. Imported from `src/main.tsx` in the order below; that order IS the cascade order. Palette is 100% OKLCH via `light-dark()` tokens. Default theme is always light (`:root { color-scheme: light }`); dark mode applies only via the explicit `[data-theme="dark"]` override (manual toggle, persisted). `prefers-color-scheme` does not select the theme.
 
 ## Files
 
@@ -11,7 +11,7 @@ Global CSS split into cascade layers. Imported from `src/main.tsx` in the order 
 - `features.css` — Strategy components (`src/features/`): semáforo, 50 UIT, sede finder, vencimientos, materia clarification, life-events, footer.
 - `dashboard.css` — Assistant dashboard (`/asistente`) layout, queue, detail, metrics.
 - `responsive.css` — `@media`/`@container` queries; imported after components so breakpoints override base styles.
-- `theme.css` — `:root[data-theme]` `color-scheme` overrides for the manual toggle (wins over system).
+- `theme.css` — `:root[data-theme]` `color-scheme` overrides for the manual toggle (`dark` opts into dark mode; `light` is the default).
 - `utilities.css` — Atomic helpers (`.sr-only`).
 - `animation.css` — `@keyframes` (transform/opacity only) and `prefers-reduced-motion` blocks.
 

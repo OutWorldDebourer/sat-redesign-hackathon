@@ -14,7 +14,11 @@
 }
 
 :root {
-  color-scheme: light dark;
+  /* light (no "light dark"): el default es SIEMPRE claro, aunque el SO prefiera
+     oscuro. light-dark() resuelve al valor claro por defecto; el modo oscuro solo
+     aparece cuando el usuario lo elige y :root[data-theme="dark"] pone
+     color-scheme:dark (theme.css). prefers-color-scheme ya no decide el tema. */
+  color-scheme: light;
   --color-primary: light-dark(oklch(0.302 0.13 269.1), oklch(0.42 0.13 261));
   --color-secondary: light-dark(oklch(0.564 0.118 247.7), oklch(0.64 0.12 250));
   --color-accent: light-dark(oklch(0.521 0.137 247.2), oklch(0.7 0.13 244));

@@ -1,65 +1,57 @@
 import { useCallback, useEffect, useState } from "react";
 
-// Preferencia de tema. "system" sigue prefers-color-scheme (sin atributo data-theme,
-// el CSS resuelve via `color-scheme: light dark` + light-dark()). "light"/"dark" fijan
-// el tema y se persisten. El flash inicial se evita con un script inline en index.html.
+// Preferencia de tema. Default SIEMPRE claro: una visita nueva (sin valor en
+// localStorage) inicia en claro aunque el SO prefiera oscuro. El modo oscuro solo
+// se aplica si el usuario lo elige con el toggle (se persiste en localStorage); al
+// limpiar el storage se vuelve al claro. prefers-color-scheme ya NO decide el tema.
+// El flash inicial se evita con un script inline en index.html que refleja la misma
+// regla (resolveTheme) sobre <html data-theme> antes de pintar.
 
-export type ThemePref = "light" | "dark" | "system";
 export type EffectiveTheme = "light" | "dark";
 
 const STORAGE_KEY = "sat-theme";
 
-function systemPrefersDark(): boolean {
-  return typeof window !== "undefined" && typeof window.matchMedia === "function"
-    ? window.matchMedia("(prefers-color-scheme: dark)").matches
-    : false;
+// Regla unica de resolucion: solo el valor explicito "dark" da oscuro; cualquier
+// otro valor (null, "light", legacy "system", invalido) cae a claro.
+export function resolveTheme(stored: string | null): EffectiveTheme {
+  return stored === "dark" ? "dark" : "light";
 }
 
-function readStoredPref(): ThemePref {
-  if (typeof window === "undefined") return "system";
+function readStoredTheme(): EffectiveTheme {
+  if (typeof window === "undefined") return "light";
   try {
-    const value = window.localStorage.getItem(STORAGE_KEY);
-    return value === "light" || value === "dark" ? value : "system";
+    return resolveTheme(window.localStorage.getItem(STORAGE_KEY));
   } catch {
-    return "system";
+    return "light";
   }
 }
 
-function applyPref(pref: ThemePref): void {
-  const root = document.documentElement;
-  if (pref === "system") root.removeAttribute("data-theme");
-  else root.setAttribute("data-theme", pref);
+function applyTheme(theme: EffectiveTheme): void {
+  document.documentElement.setAttribute("data-theme", theme);
 }
 
 export function useTheme() {
-  const [pref, setPref] = useState<ThemePref>(readStoredPref);
-  const [systemDark, setSystemDark] = useState<boolean>(systemPrefersDark);
+  const [effective, setEffective] = useState<EffectiveTheme>(readStoredTheme);
 
-  // Refleja la preferencia en <html> y la persiste (o la borra si es "system").
+  // Refleja el tema en <html data-theme>. No persiste aqui: el storage solo se
+  // escribe en una eleccion explicita del usuario (setTheme), para que una visita
+  // nueva quede en claro con el storage vacio y limpiar el storage vuelva a claro.
   useEffect(() => {
-    applyPref(pref);
+    applyTheme(effective);
+  }, [effective]);
+
+  const setTheme = useCallback((next: EffectiveTheme) => {
+    setEffective(next);
     try {
-      if (pref === "system") window.localStorage.removeItem(STORAGE_KEY);
-      else window.localStorage.setItem(STORAGE_KEY, pref);
+      window.localStorage.setItem(STORAGE_KEY, next);
     } catch {
       /* almacenamiento no disponible: el tema sigue funcionando en memoria */
     }
-  }, [pref]);
-
-  // Sigue los cambios del sistema mientras la preferencia es "system".
-  useEffect(() => {
-    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
-    const mql = window.matchMedia("(prefers-color-scheme: dark)");
-    const onChange = (event: MediaQueryListEvent) => setSystemDark(event.matches);
-    mql.addEventListener("change", onChange);
-    return () => mql.removeEventListener("change", onChange);
   }, []);
 
-  const effective: EffectiveTheme = pref === "system" ? (systemDark ? "dark" : "light") : pref;
-
   const toggle = useCallback(() => {
-    setPref(effective === "dark" ? "light" : "dark");
-  }, [effective]);
+    setTheme(effective === "dark" ? "light" : "dark");
+  }, [effective, setTheme]);
 
-  return { pref, effective, toggle, setPref };
+  return { effective, toggle, setTheme };
 }

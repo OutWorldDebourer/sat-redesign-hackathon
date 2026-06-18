@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#16236e" />
     <script>
-      // Anti-flash: fija el tema guardado antes de pintar el CSS.
+      // Anti-flash: fija el tema antes de pintar el CSS. Default SIEMPRE claro;
+      // solo el valor explicito "dark" en localStorage da oscuro (misma regla que
+      // resolveTheme en src/hooks/useTheme.ts). Una visita nueva o un storage
+      // limpio quedan en claro aunque el SO prefiera oscuro.
       (function () {
+        var t = null;
         try {
-          var t = localStorage.getItem("sat-theme");
-          if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+          t = localStorage.getItem("sat-theme");
         } catch (e) {}
+        document.documentElement.setAttribute("data-theme", t === "dark" ? "dark" : "light");
       })();
     </script>
     <meta
