@@ -433,3 +433,76 @@
     flex-direction: column;
   }
 }
+
+/* ── Chat siempre acoplado en PC, aunque la ventana sea angosta (<=980px) ──
+   El bloque @media (max-width:980px) de arriba manda el asistente al bottom
+   sheet; eso es correcto SOLO en tactil. Una ventana de escritorio angosta
+   tambien cae en ese ancho, pero el chat es la propuesta de valor y DEBE seguir
+   acoplado a la derecha. Este override reengancha el sidebar cuando el puntero
+   primario es fino y hay hover (mouse/trackpad), dejando el bottom sheet
+   exclusivo de celular/tactil (pointer:coarse + hover:none, que aqui no matchea).
+   Iguala la especificidad del bloque tactil ([data-sheet] e .is-minimized son
+   0,2,0) y va al final del archivo para ganar por orden de cascada. El sticky se
+   conserva: .app-shell mantiene min-height:100vh (de layout.css), no height. */
+@media (max-width: 980px) and (hover: hover) and (pointer: fine) {
+  .app-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(300px, 34vw, 360px);
+  }
+
+  /* sin bottom sheet flotante en PC, el contenido no necesita la reserva de 104px
+     que el bloque tactil deja para el sheet; restaura el zocalo de escritorio. */
+  .main-content {
+    padding-bottom: var(--space-2xl);
+  }
+
+  .assistant-region,
+  .assistant-region[data-sheet] {
+    position: sticky;
+    top: 0;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    height: 100vh; /* fallback sin svh */
+    height: 100svh;
+    max-height: 100svh;
+    min-height: 0;
+    border-top: 0;
+    border-left: 1px solid var(--color-border);
+    border-radius: 0;
+    box-shadow: none;
+    transform: none;
+    opacity: 1;
+  }
+
+  .bottom-sheet-trigger {
+    display: none;
+  }
+
+  .desktop-minimize {
+    display: inline-flex;
+  }
+
+  /* minimizado vuelve al rail acoplado; el ancho 96px lo da
+     .app-shell:has(.is-minimized) en layout.css (0,3,0, gana por especificidad). */
+  .assistant-region.is-minimized {
+    right: auto;
+    bottom: auto;
+    left: auto;
+    width: 96px;
+    height: 100vh;
+    height: 100svh;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .assistant-region.is-minimized .assistant-minirail {
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+
+  .assistant-region.is-minimized .assistant-rail-button {
+    min-height: calc(100vh - var(--space-lg));
+    min-height: calc(100svh - var(--space-lg));
+  }
+}

@@ -259,6 +259,21 @@
   }
 }
 
+/* En PC angosto (<=980px con mouse) el chat queda acoplado lateral, no como
+   bottom sheet: usa la entrada (panelSlide, eje X) y el "shake" de atencion del
+   sidebar (assistantAttendDesktop, eje X), no las variantes verticales del sheet.
+   Va despues del bloque tactil para ganar el empate de especificidad en
+   animation-name. */
+@media (prefers-reduced-motion: no-preference) and (max-width: 980px) and (hover: hover) and (pointer: fine) {
+  .assistant-region {
+    animation: panelSlide 520ms var(--ease-out) both;
+  }
+
+  .assistant-region.is-attending .assistant-panel {
+    animation-name: assistantAttendDesktop;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
