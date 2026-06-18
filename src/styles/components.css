@@ -1201,7 +1201,11 @@
 .assistant-panel {
   position: relative;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  /* 4 filas para los 4 hijos reales: header, banner anti-suplantacion, thread
+     (unica fila flexible: 1fr + min-height:0 => scroll interno), composer. Con
+     solo 3 tracks el banner caia en el 1fr y lo colapsaba, solapandose con el
+     thread; el composer iba a una fila implicita y se recortaba. */
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
   min-height: 0;
   overflow: hidden;
   /* El panel se mide a si mismo: sus internos responden a su ancho real, no al
